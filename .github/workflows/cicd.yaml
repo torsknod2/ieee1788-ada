@@ -109,7 +109,7 @@ jobs:
       - name: Alire Run Instrumented Tests
         run: alr --chdir=$GITHUB_WORKSPACE/tests --non-interactive --force run --skip-build --args "$GITHUB_WORKSPACE/aunit_results.xml"
         env:
-          GNATCOV_TRACE_FILE: $(pwd)/
+          GNATCOV_TRACE_FILE: $GITHUB_WORKSPACE/
 
       - name: Publish AUnit Results
         uses: actions/upload-artifact@65c4c4a1ddee5b72f698fdd19549f0f0fb45cf08
