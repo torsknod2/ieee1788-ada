@@ -3,6 +3,12 @@
 The goal is to have interval arithmetic support for all integer, modulo, delta and floating data types in Ada.
 Limitations are given by the operations available for the respective Ada data types.
 
+# Badges
+- [![Dependabot Updates](https://github.com/torsknod2/ieee1788-ada/actions/workflows/dependabot/dependabot-updates/badge.svg)](https://github.com/torsknod2/MDSpanTest/actions/workflows/dependabot/dependabot-updates)
+- [![C++ CI](https://github.com/torsknod2/ieee1788-ada/actions/workflows/cicd.yml/badge.svg)](https://github.com/torsknod2/ieee1788-ada/actions/workflows/cicd.yml)
+- [![OpenSSF Scorecard](https://api.scorecard.dev/projects/github.com/torsknod2/ieee1788-ada/badge)](https://scorecard.dev/viewer/?uri=github.com/torsknod2/ieee1788-ada)
+- [![OpenSSF Best Practices](https://bestpractices.coreinfrastructure.org/projects/10022/badge)](https://bestpractices.coreinfrastructure.org/projects/10022)
+
 # Getting Started
 TODO: Guide users through getting your code up and running on their own system. In this section you can talk about:
 1.	Installation process
