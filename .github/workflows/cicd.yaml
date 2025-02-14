@@ -1,0 +1,159 @@
+# IEEE 1788 Interval Arithmetic native library for Ada
+# Copyright (C) 2024,2025 Torsten Knodt
+
+# This library is free software; you can redistribute it and/or
+# modify it under the terms of the GNU Lesser General Public
+# License as published by the Free Software Foundation; either
+# version 3.0 of the License, or (at your option) any later version.
+
+# This library is distributed in the hope that it will be useful,
+# but WITHOUT ANY WARRANTY; without even the implied warranty of
+# MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU
+# Lesser General Public License for more details.
+
+# You should have received a copy of the GNU Lesser General Public
+# License along with this library; if not, write to the Free Software
+# Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301  USA
+
+# As a special exception to the GNU Lesser General Public License version 3
+# ("LGPL3"), the copyright holders of this Library give you permission to convey
+# to a third party a Combined Work that links statically or dynamically to this
+# Library without providing any Minimal Corresponding Source or Minimal
+# Application Code as set out in 4d or providing the installation information set
+# out in section 4e, provided that you comply with the other provisions of LGPL3
+# and provided that you meet, for the Application the terms and conditions of the
+# license(s) which apply to the Application.
+
+# Except as stated in this special exception, the provisions of LGPL3 will
+# continue to comply in full to this Library. If you modify this Library, you
+# may apply this exception to your version of this Library, but you are not
+# obliged to do so. If you do not wish to do so, delete this exception statement
+# from your version. This exception does not (and cannot) modify any license terms
+# which apply to the Application, with which you must still comply.
+
+name: CI/ CD
+
+on:
+  push:
+    tags:
+      - "*"
+  pull_request:
+    branches:
+      - "*"
+  workflow_dispatch:
+
+concurrency:
+  group: ${{ github.workflow }}-${{ github.event.pull_request.number || github.ref || github.run_id}}
+  cancel-in-progress: true
+
+permissions: {}
+
+jobs:
+  GNATprove:
+    runs-on: ubuntu-24.04
+    steps:
+      - name: Harden Runner
+        uses: step-security/harden-runner@cb605e52c26070c328afc4562f0b4ada7618a84e
+        with:
+          egress-policy: block
+          allowed-endpoints: >
+            github.com:443
+            api.github.com:443
+            objects.githubusercontent.com:443
+
+      - name: Setup Alire
+        uses: alire-project/setup-alire@v4
+
+      - name: Alire Validation Build
+        run: ./alr/bin/alr --chdir=$(pwd) --non-interactive build --validation
+
+      - name: Alire GNATprove
+        run: ./alr/bin/alr --chdir=$(pwd) --non-interactive gnatprove --proof=progressive:all --level=4 -j0 --checks-as-errors=on --warnings=error
+
+      - name: Publish GNATprove Output
+        uses: actions/upload-artifact@65c4c4a1ddee5b72f698fdd19549f0f0fb45cf08
+        with:
+          name: gnatprove.out
+          path: obj/validation/gnatprove/gnatprove.out
+
+  Test:
+    runs-on: ubuntu-24.04
+    steps:
+      - name: Harden Runner
+        uses: step-security/harden-runner@cb605e52c26070c328afc4562f0b4ada7618a84e
+        with:
+          egress-policy: block
+          allowed-endpoints: >
+            github.com:443
+            api.github.com:443
+            objects.githubusercontent.com:443
+
+      - name: Setup Alire
+        uses: alire-project/setup-alire@v4
+
+      - name: Alire Generate Configuration
+        run: ./alr/bin/alr --chdir=$(pwd)/tests --non-interactive --force build --validation --stop-after=generation
+
+      - name: Alire GNATcov Instrument
+        run: ./alr/bin/alr --chdir=$(pwd)/tests --non-interactive --force gnatcov instrument --level=stmt+mcdc --dump-trigger=atexit --projects=ieee1788.gpr
+
+      - name: Alire Build Instrumented Test Code
+        run: ./alr/bin/alr --chdir=$(pwd)/tests --non-interactive --force build --validation -- --src-subdirs=gnatcov-instr --implicit-with=gnatcov_rts_full
+
+      - name: Alire Run Instrumented Tests
+        run: ./alr/bin/alr --chdir=$(pwd)/tests --non-interactive --force run --skip-build --args "$(pwd)/aunit_results.xml"
+        env:
+          GNATCOV_TRACE_FILE: $(pwd)/
+
+      - name: Publish AUnit Results
+        uses: actions/upload-artifact@65c4c4a1ddee5b72f698fdd19549f0f0fb45cf08
+        with:
+          name: aunit_results.xml
+          path: aunit_results.xml
+
+      - name: Alire GNATcov Report XCOV+
+        run: ./alr/bin/alr --chdir=$(pwd)/tests --non-interactive --force gnatcov coverage --annotate=xcov+ --output-dir $(pwd)/gnatcov_out --level=stmt+mcdc --projects ieee1788.gpr $(pwd)/*.srctrace
+
+      - name: Alire GNATcov Report DHTML
+        run: ./alr/bin/alr --chdir=$(pwd)/tests --non-interactive --force gnatcov coverage --annotate=dhtml --output-dir $(pwd)/gnatcov_out --level=stmt+mcdc --projects ieee1788.gpr $(pwd)/*.srctrace
+
+      - name: Alire GNATcov Report HTML
+        run: ./alr/bin/alr --chdir=$(pwd)/tests --non-interactive --force gnatcov coverage --annotate=html+ --output-dir $(pwd)/gnatcov_out --level=stmt+mcdc --projects ieee1788.gpr $(pwd)/*.srctrace
+
+      - name: Alire GNATcov Report Sarif
+        run: ./alr/bin/alr --chdir=$(pwd)/tests --non-interactive --force gnatcov coverage --annotate=sarif --output-dir $(pwd)/gnatcov_out --level=stmt+mcdc --projects ieee1788.gpr $(pwd)/*.srctrace
+
+      - name: Publish GNATcov Output
+        uses: actions/upload-artifact@65c4c4a1ddee5b72f698fdd19549f0f0fb45cf08
+        with:
+          name: gnatcov_out
+          path: gnatcov_out
+
+  Publish:
+    if: github.event_name == 'push' && startsWith(github.ref, 'refs/tags/')
+    needs: [GNATprove, Test]
+    runs-on: ubuntu-24.04
+    steps:
+      - name: Harden Runner
+        uses: step-security/harden-runner@cb605e52c26070c328afc4562f0b4ada7618a84e
+        with:
+          egress-policy: block
+          allowed-endpoints: >
+            github.com:443
+            api.github.com:443
+            objects.githubusercontent.com:443
+
+      - name: Checkout code
+        uses: actions/checkout@11bd71901bbe5b1630ceea73d27597364c9af683
+
+      - name: Setup Alire
+        uses: alire-project/setup-alire@v4
+
+      - name: Alire Publish
+        run: ./alr/bin/alr --chdir=$(pwd) --non-interactive --force publish --tar --skip-submit . $(GITHUB_SHA)
+
+      - name: Publish Alire Archive
+        uses: actions/upload-artifact@65c4c4a1ddee5b72f698fdd19549f0f0fb45cf08
+        with:
+          name: alire-archive
+          path: $(pwd)/alire/archive/

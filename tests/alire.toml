@@ -31,14 +31,22 @@
 # from your version. This exception does not (and cannot) modify any license terms
 # which apply to the Application, with which you must still comply.
 
-*.ali
-/alire/
-/alire/tests/
-/config/
-/lib/
-*.o
-/obj/
-/tests/alire/
-/tests/config/
-/tests/lib/
-/tests/obj/
+name = "ieee1788_tests"
+description = "IEEE 1788 library tests"
+long-description = "AUnit tests for the Native IEEE 1788 library"
+version = "0.0.1-dev"
+licenses = "LGPL-3.0-or-later WITH LGPL-3.0-linking-exception"
+tags = ["ada", "math", "library"]
+
+authors = ["Torsten Knodt"]
+maintainers = ["Torsten Knodt <torsten.knodt@datas-world.de>"]
+
+executables = ["tests"]
+
+[[depends-on]]
+ieee1788 = "~0.0.1-dev"
+aunit = "^22.0.0"
+gnatcov = "^22.0.1"
+
+[[pins]]
+ieee1788 = { path = '..' }

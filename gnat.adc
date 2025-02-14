@@ -1,0 +1,98 @@
+-- IEEE 1788 Interval Arithmetic native library for Ada
+-- Copyright (C) 2024,2025 Torsten Knodt
+
+-- This library is free software; you can redistribute it and/or
+-- modify it under the terms of the GNU Lesser General Public
+-- License as published by the Free Software Foundation; either
+-- version 3.0 of the License, or (at your option) any later version.
+
+-- This library is distributed in the hope that it will be useful,
+-- but WITHOUT ANY WARRANTY; without even the implied warranty of
+-- MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU
+-- Lesser General Public License for more details.
+
+-- You should have received a copy of the GNU Lesser General Public
+-- License along with this library; if not, write to the Free Software
+-- Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301  USA
+
+-- As a special exception to the GNU Lesser General Public License version 3
+-- ("LGPL3"), the copyright holders of this Library give you permission to convey
+-- to a third party a Combined Work that links statically or dynamically to this
+-- Library without providing any Minimal Corresponding Source or Minimal
+-- Application Code as set out in 4d or providing the installation information set
+-- out in section 4e, provided that you comply with the other provisions of LGPL3
+-- and provided that you meet, for the Application the terms and conditions of the
+-- license(s) which apply to the Application.
+
+-- Except as stated in this special exception, the provisions of LGPL3 will
+-- continue to comply in full to this Library. If you modify this Library, you
+-- may apply this exception to your version of this Library, but you are not
+-- obliged to do so. If you do not wish to do so, delete this exception statement
+-- from your version. This exception does not (and cannot) modify any license terms
+-- which apply to the Application, with which you must still comply.
+
+pragma Ada_2012; -- FIXME 2022
+--- pragma Aggregate_Individually_Assign;
+--- pragma Allow_Integer_Address;
+--- pragma Annotate;
+pragma Assertion_Policy (CHECK);
+pragma Assume_No_Invalid_Values (Off);
+--- pragma C_Pass_By_Copy;
+--- pragma Check_Float_Overflow;
+--- pragma Check_Name;
+--- pragma Check_Policy;
+--- pragma Component_Alignment;
+--- pragma Convention_Identifier;
+--- pragma Debug_Policy;
+--- pragma Default_Scalar_Storage_Order;
+--- pragma Default_Storage_Pool;
+pragma Detect_Blocking;
+--- pragma Disable_Atomic_Synchronization;
+--- pragma Discard_Names;
+--- pragma Elaboration_Checks; TBD
+--- pragma Eliminate;
+pragma Enable_Atomic_Synchronization;
+--- pragma Extend_System;
+pragma Extensions_Allowed (On);
+--- pragma External_Name_Casing;
+--- pragma Fast_Math;
+--- pragma Favor_Top_Level;
+--- pragma Ignore_Pragma;
+pragma Implicit_Packing;
+--- pragma Initialize_Scalars;
+--- pragma Interrupt_State;
+pragma License (Restricted);
+--- pragma Locking_Policy;
+--- pragma No_Component_Reordering;
+--- pragma No_Heap_Finalization;
+--- pragma No_Strict_Aliasing;
+--- pragma Normalize_Scalars; FIXME
+--- pragma Optimize_Alignment (Time); FIXME not working with aunit
+pragma Overflow_Mode (Eliminated,Eliminated);
+--- pragma Overriding_Renamings;
+--- pragma Partition_Elaboration_Policy;
+--- pragma Persistent_BSS;
+--- pragma Prefix_Exception_Messages;
+--- pragma Priority_Specific_Dispatching;
+--- pragma Profile(Ravenscar | Restricted);
+--- pragma Profile_Warnings;
+--- pragma Queuing_Policy;
+--- pragma Rename_Pragma;
+--- pragma Restrictions;
+--- pragma Restriction_Warnings;
+pragma Reviewable;
+--- pragma Short_Circuit_And_Or;
+--- pragma Source_File_Name;
+--- pragma Source_File_Name_Project;
+pragma SPARK_Mode (On);
+pragma Style_Checks (ALL_CHECKS);
+--- pragma Suppress;
+--- pragma Suppress_Exception_Locations;
+--- pragma Task_Dispatching_Policy;
+--- pragma Unevaluated_Use_Of_Old;
+--- pragma Unsuppress;
+--- pragma Use_VADS_Size;
+pragma Validity_Checks (ALL_CHECKS);
+--- pragma Warning_As_Error;
+--- pragma Warnings;
+--- pragma Wide_Character_Encoding;

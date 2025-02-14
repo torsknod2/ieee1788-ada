@@ -1,0 +1,11 @@
+{
+    "recommendations": [
+        "adacore.ada",
+        "entomy.ada-snippets",
+        "melodicdevelopment.azure-work-management",
+        "ms-azure-devops.azure-pipelines",
+        "ms-vscode.azure-repos",
+        "ms-vscode.azurecli",
+        "ms-vscode.cpptools"
+    ]
+}

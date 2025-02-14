@@ -31,14 +31,5 @@
 # from your version. This exception does not (and cannot) modify any license terms
 # which apply to the Application, with which you must still comply.
 
-*.ali
-/alire/
-/alire/tests/
-/config/
-/lib/
-*.o
-/obj/
-/tests/alire/
-/tests/config/
-/tests/lib/
-/tests/obj/
+@torsknod
+@torsknod2
