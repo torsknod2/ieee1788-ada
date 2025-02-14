@@ -65,7 +65,7 @@ jobs:
         uses: actions/checkout@11bd71901bbe5b1630ceea73d27597364c9af683
 
       - name: Setup Alire
-        uses: alire-project/setup-alire@v4
+        uses: alire-project/setup-alire@678ded26f00993ff4ae2ab42248c44e887c1f2e7 # v4
 
       - name: Install FSF toolchain
         uses: alire-project/alr-install@v2
@@ -100,7 +100,7 @@ jobs:
         uses: actions/checkout@11bd71901bbe5b1630ceea73d27597364c9af683
 
       - name: Setup Alire
-        uses: alire-project/setup-alire@v4
+        uses: alire-project/setup-alire@678ded26f00993ff4ae2ab42248c44e887c1f2e7 # v4
 
       - name: Install FSF toolchain
         uses: alire-project/alr-install@v2
@@ -163,7 +163,7 @@ jobs:
         uses: actions/checkout@11bd71901bbe5b1630ceea73d27597364c9af683
 
       - name: Setup Alire
-        uses: alire-project/setup-alire@v4
+        uses: alire-project/setup-alire@678ded26f00993ff4ae2ab42248c44e887c1f2e7 # v4
 
       - name: Alire Publish
         run: alr --chdir=$GITHUB_WORKSPACE --non-interactive --force publish --tar --skip-submit . $(GITHUB_SHA)
