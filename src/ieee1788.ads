@@ -37,8 +37,9 @@
 --  https://standards.ieee.org/ieee/1788/4431/
 --  https://standards.ieee.org/ieee/1788.1/6074/
 --
+
 generic
-   type T is delta <>;
+   type T is delta <> ;
 package Ieee1788 is
    pragma Pure;
    Invalid_Arguments_To_Division : exception;
@@ -46,8 +47,8 @@ package Ieee1788 is
    type IntervalElements is array (Integer range <>) of Interval;
    type TElements is array (Integer range <>) of T;
    function To_Interval (Right : T) return Interval;
-   function To_Interval (Lower_Bound, Upper_Bound : T) return Interval with
-     Pre => Lower_Bound <= Upper_Bound;
+   function To_Interval (Lower_Bound, Upper_Bound : T) return Interval
+   with Pre => Lower_Bound <= Upper_Bound;
    function Hull (Left, Right : Interval) return Interval;
    function Hull (Left, Right : T) return Interval;
    function Hull (Right : IntervalElements) return Interval;
@@ -69,23 +70,29 @@ private
    type Interval is record
       Lower_Bound : T;
       Upper_Bound : T;
-   end record with
+   end record
+   with
      Type_Invariant =>
-      (Lower_Bound <= Upper_Bound and Upper_Bound >= Lower_Bound);
+       (Lower_Bound <= Upper_Bound and Upper_Bound >= Lower_Bound);
    subtype Sign is Integer range -1 .. 1;
-   function Sgn (Right : T) return Sign with
+   function Sgn (Right : T) return Sign
+   with
      Post =>
-      (Right < T (0) and then Sgn'Result = -1) or
-      (Right = T (0) and then Sgn'Result = 0) or
-      (Right > T (0) and then Sgn'Result = 1);
+       (Right < T (0) and then Sgn'Result = -1)
+       or (Right = T (0) and then Sgn'Result = 0)
+       or (Right > T (0) and then Sgn'Result = 1);
 
-   function Min (Left, Right : T) return T with
+   function Min (Left, Right : T) return T
+   with
      Post =>
-      Min'Result <= Left and then Min'Result <= Right
-      and then (Min'Result = Left or Min'Result = Right);
+       Min'Result <= Left
+       and then Min'Result <= Right
+       and then (Min'Result = Left or Min'Result = Right);
 
-   function Max (Left, Right : T) return T with
+   function Max (Left, Right : T) return T
+   with
      Post =>
-      Max'Result >= Left and then Max'Result >= Right
-      and then (Max'Result = Left or Max'Result = Right);
+       Max'Result >= Left
+       and then Max'Result >= Right
+       and then (Max'Result = Left or Max'Result = Right);
 end Ieee1788;

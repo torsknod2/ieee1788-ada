@@ -33,8 +33,9 @@
 
 with AUnit.Test_Suites;
 with AUnit.Test_Cases;
+
 generic
-   type G is delta <>;
+   type G is delta <> ;
 package A_Suite is
    function Suite return AUnit.Test_Suites.Access_Test_Suite;
 end A_Suite;

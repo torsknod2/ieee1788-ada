@@ -68,7 +68,7 @@ pragma License (Restricted);
 --- pragma No_Strict_Aliasing;
 --- pragma Normalize_Scalars; FIXME
 --- pragma Optimize_Alignment (Time); FIXME not working with aunit
-pragma Overflow_Mode (Eliminated,Eliminated);
+pragma Overflow_Mode (Eliminated, Eliminated);
 --- pragma Overriding_Renamings;
 --- pragma Partition_Elaboration_Policy;
 --- pragma Persistent_BSS;

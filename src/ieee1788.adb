@@ -37,6 +37,7 @@
 --  https://standards.ieee.org/ieee/1788/4431/
 --  https://standards.ieee.org/ieee/1788.1/6074/
 --
+
 package body Ieee1788 is
    function Entire return Interval is
    begin
@@ -100,8 +101,8 @@ package body Ieee1788 is
    function "=" (Left, Right : Interval) return Boolean is
    begin
       return
-        Left.Lower_Bound = Right.Lower_Bound and
-        Left.Upper_Bound = Right.Upper_Bound;
+        Left.Lower_Bound = Right.Lower_Bound
+        and Left.Upper_Bound = Right.Upper_Bound;
    end "=";
 
    function "<" (Left, Right : Interval) return Boolean is
@@ -227,12 +228,11 @@ package body Ieee1788 is
               Left.Upper_Bound * Right.Upper_Bound);
       end MulPP;
       Table :
-        constant array
-          (Sign,
-           Sign) of access function (Left, Right : Interval) return Interval :=
-        ((MulNN'Access, MulNM'Access, MulNP'Access),
-         (MulMN'Access, MulMM'Access, MulMP'Access),
-         (MulPN'Access, MulPM'Access, MulPP'Access));
+        constant array (Sign, Sign)
+        of access function (Left, Right : Interval) return Interval :=
+          ((MulNN'Access, MulNM'Access, MulNP'Access),
+           (MulMN'Access, MulMM'Access, MulMP'Access),
+           (MulPN'Access, MulPM'Access, MulPP'Access));
       Signs : constant array (1 .. 2, 1 .. 2) of Sign :=
         ((Sign (Left.Lower_Bound), Sign (Left.Upper_Bound)),
          (Sign (Right.Lower_Bound), Sign (Right.Upper_Bound)));
@@ -243,7 +243,7 @@ package body Ieee1788 is
             else (if Signs (2, 1) >= 0 then 1 else 0)),
            (if Signs (1, 2) <= 0 then -1
             else (if Signs (1, 1) >= 0 then 1 else 0)))
-          (Left, Right);
+             (Left, Right);
    end "*";
 
    function "/" (Left, Right : Interval) return Interval is
@@ -317,12 +317,11 @@ package body Ieee1788 is
               Left.Upper_Bound * Right.Lower_Bound);
       end DivPP;
       Table :
-        constant array
-          (Sign,
-           Sign) of access function (Left, Right : Interval) return Interval :=
-        ((DivNN'Access, DivNM'Access, DivNP'Access),
-         (DivMN'Access, DivMM'Access, DivMP'Access),
-         (DivPN'Access, DivPM'Access, DivPP'Access));
+        constant array (Sign, Sign)
+        of access function (Left, Right : Interval) return Interval :=
+          ((DivNN'Access, DivNM'Access, DivNP'Access),
+           (DivMN'Access, DivMM'Access, DivMP'Access),
+           (DivPN'Access, DivPM'Access, DivPP'Access));
       Signs : constant array (1 .. 2, 1 .. 2) of Sign :=
         ((Sign (Left.Lower_Bound), Sign (Left.Upper_Bound)),
          (Sign (Right.Lower_Bound), Sign (Right.Upper_Bound)));
@@ -334,7 +333,7 @@ package body Ieee1788 is
             else (if Signs (2, 1) >= 0 then 1 else 0)),
            (if Signs (1, 2) <= 0 then -1
             else (if Signs (1, 1) >= 0 then 1 else 0)))
-          (Left, Right);
+             (Left, Right);
    end "/";
 
    function "abs" (Right : Interval) return Interval is

@@ -43,3 +43,4 @@ maintainers = ["Torsten Knodt <torsten.knodt@datas-world.de>"]
 
 [[depends-on]]
 gnatprove = "^14.1.1"
+gnatformat = "^25.0.0"

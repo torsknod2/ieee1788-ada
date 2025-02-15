@@ -34,12 +34,15 @@
 with AUnit.Test_Suites;
 with AUnit.Test_Cases;
 with To_Interval_Test;
+
 package body A_Suite is
 
    function Suite return AUnit.Test_Suites.Access_Test_Suite is
       Ret : constant Access_Test_Suite := new Test_Suite;
    begin
-      Ret.Add_Test (AUnit.Test_Cases.Test_Case_Access'(new To_Interval_Test.To_Interval_Test));
+      Ret.Add_Test
+        (AUnit.Test_Cases.Test_Case_Access'
+           (new To_Interval_Test.To_Interval_Test));
       return Ret;
    end Suite;
 end A_Suite;
