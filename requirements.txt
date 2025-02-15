@@ -1,2 +1,3 @@
 docutils
 pre-commit
+sphinxcontrib-adadomain

@@ -351,7 +351,7 @@ jobs:
           cache: pip
 
       - name: Install docutils
-        run: pip install -U docutils
+        run: pip install -U docutils sphinxcontrib-adadomain
 
       - name: rst to ${{ matrix.format }}
         id: rst_to
