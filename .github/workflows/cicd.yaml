@@ -60,6 +60,7 @@ jobs:
             github.com:443
             api.github.com:443
             objects.githubusercontent.com:443
+            proxy.golang.org:443
             pypi.org:443
             files.pythonhosted.org:443
 
