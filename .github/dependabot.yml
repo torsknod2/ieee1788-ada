@@ -46,3 +46,12 @@ updates:
     directory: "/" # Location of package manifests
     schedule:
       interval: "daily"
+
+  - package-ecosystem: pip
+    assignees:
+      - "torsknod2"
+    reviewers:
+      - "torsknod2"
+    directory: /
+    schedule:
+      interval: daily
