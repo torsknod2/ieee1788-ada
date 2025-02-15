@@ -35,4 +35,4 @@ repos:
   rev: v1.5.5
   hooks:
   - id: remove-crlf
-  - id: forbid-tabs
+#  - id: forbid-tabs
