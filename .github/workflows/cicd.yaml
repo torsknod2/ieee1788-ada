@@ -306,7 +306,25 @@ jobs:
     name: GNATdoc rst to ${{ matrix.format }}
     strategy:
       matrix:
-        format: [html, html4, html5, latex, man, odt, s5, xetex, xml]
+        include:
+          - format: html
+            params: --generator --time --source-link --verbose --strict --traceback --output-encoding=us-ascii:strict --pep-references --rfc-references --smart-quotes=yes --math-output=MathJax
+          - format: html4
+            params: --generator --time --source-link --verbose --strict --traceback --output-encoding=us-ascii:strict --pep-references --rfc-references --smart-quotes=yes --math-output=MathJax
+          - format: html5
+            params: --generator --time --source-link --verbose --strict --traceback --output-encoding=us-ascii:strict --pep-references --rfc-references --smart-quotes=yes --math-output=MathJax --section-self-link
+          - format: latex
+            params: --generator --time --source-link --verbose --strict --traceback --output-encoding=us-ascii:strict --pep-references --rfc-references --smart-quotes=yes --embed-stylesheet --use-part-section --use-latex-docinfo --use-latex-abstract
+          - format: man
+            params: --generator --time --source-link --verbose --strict --traceback --output-encoding=us-ascii:strict --pep-references --rfc-references --smart-quotes=yes
+          - format: odt
+            params: --generator --time --source-link --verbose --strict --traceback --output-encoding=us-ascii:strict --pep-references --rfc-references --smart-quotes=yes --add-syntax-highlighting --create-links
+          - format: s5
+            params: --generator --time --source-link --verbose --strict --traceback --output-encoding=us-ascii:strict --pep-references --rfc-references --smart-quotes=yes --visible-controls --current-slide
+          - format: xetex
+            params: --generator --time --source-link --verbose --strict --traceback --output-encoding=us-ascii:strict --pep-references --rfc-references --smart-quotes=yes --embed-stylesheet --use-part-section --use-latex-docinfo --use-latex-abstract
+          - format: xml
+            params: --generator --time --source-link --verbose --strict --traceback --output-encoding=us-ascii:strict --pep-references --rfc-references --smart-quotes=yes --newlines --indents
     needs: GNATdocRST
     runs-on: ubuntu-24.04
     steps:
@@ -337,7 +355,7 @@ jobs:
 
       - name: rst to ${{ matrix.format }}
         id: rst_to
-        run: for SOURCE in doc/rst/*.rst; do rst2${{ matrix.format }} --generator --time --source-link --strict --traceback --pep-references --rfc-references --create-links --output=doc/${{ matrix.format }} "${SOURCE}"; done
+        run: for SOURCE in doc/rst/*.rst; do rst2${{ matrix.format }} ${{ matrix.params }} --output=doc/${{ matrix.format }} "${SOURCE}"; done
 
       - name: Show help on failure
         if: failure() && steps.rst_to.conclusion == 'failure'
