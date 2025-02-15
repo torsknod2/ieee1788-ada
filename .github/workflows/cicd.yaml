@@ -136,6 +136,16 @@ jobs:
         with:
           crates: gnat_native gprbuild gnatcov
 
+      - name: Build and install gnatcov_rts_full
+        run: |
+          export GNATCOV_RTS_BUILD_PATH="${{ runner.temp }}/gnatcov_rts-build"
+          export GNATCOV_RTS_INSTALL_PATH="${{ runner.temp }}/gnatcov_rts-install"
+          mkdir -p "${GNATCOV_RTS_BUILD_PATH}"
+          cd "${GNATCOV_RTS_BUILD_PATH}"
+          gprbuild -p -P$GITHUB_WORKSPACE/alire_install/share/gnatcoverage/gnatcov_rts/gnatcov_rts_full.gpr
+          gprinstall -P$GITHUB_WORKSPACE/alire_install/share/gnatcoverage/gnatcov_rts/gnatcov_rts_full.gpr --prefix="${GNATCOV_RTS_INSTALL_PATH}"
+          echo "GPR_PROJECT_PATH=${GNATCOV_RTS_INSTALL_PATH}/share/gpr:${GPR_PROJECT_PATH}" >> $GITHUB_ENV
+
       - name: Alire Generate Configuration
         run: alr --chdir=$GITHUB_WORKSPACE/tests --non-interactive --force build --validation --stop-after=generation
 
@@ -143,6 +153,8 @@ jobs:
         run: alr --chdir=$GITHUB_WORKSPACE/tests --non-interactive --force gnatcov instrument --level=stmt+mcdc --dump-trigger=atexit --projects=$GITHUB_WORKSPACE/ieee1788.gpr
 
       - name: Alire Build Instrumented Test Code
+        env:
+          GPR_PROJECT_PATH: ${{ env.GPR_PROJECT_PATH }}
         run: alr --chdir=$GITHUB_WORKSPACE/tests --non-interactive --force build --validation -- --src-subdirs=gnatcov-instr --implicit-with=gnatcov_rts_full
 
       - name: Alire Run Instrumented Tests
