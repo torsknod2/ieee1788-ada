@@ -1,0 +1,12 @@
+{
+    "ada.useGnatformat": true,
+    "ada.renameInComments": true,
+    "ada.enableIndexing": true,
+    "ada.followSymlinks": true,
+    "ada.documentationStyle": "gnat",
+    "ada.displayMethodAncestryOnNavigation": "always",
+    "ada.foldComments": true,
+    "ada.insertWithClauses": true,
+    "ada.namedNotationThreshold": 0,
+    "ada.useCompletionSnippets": true
+}
