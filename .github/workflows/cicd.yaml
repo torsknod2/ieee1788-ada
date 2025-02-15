@@ -143,7 +143,7 @@ jobs:
           mkdir -p "${GNATCOV_RTS_BUILD_PATH}"
           cd "${GNATCOV_RTS_BUILD_PATH}"
           gprbuild -p -P$GITHUB_WORKSPACE/alire_prefix/share/gnatcoverage/gnatcov_rts/gnatcov_rts_full.gpr
-          gprinstall -P$GITHUB_WORKSPACE/alire_prefix/share/gnatcoverage/gnatcov_rts/gnatcov_rts_full.gpr --prefix="${GNATCOV_RTS_INSTALL_PATH}"
+          gprinstall -p -P$GITHUB_WORKSPACE/alire_prefix/share/gnatcoverage/gnatcov_rts/gnatcov_rts_full.gpr --prefix="${GNATCOV_RTS_INSTALL_PATH}"
           find "${GNATCOV_RTS_INSTALL_PATH}"
           echo "GPR_PROJECT_PATH=${GNATCOV_RTS_INSTALL_PATH}/share/gpr:${GPR_PROJECT_PATH}" >> $GITHUB_ENV
 
