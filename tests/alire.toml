@@ -46,8 +46,6 @@ executables = ["tests"]
 [[depends-on]]
 ieee1788 = "~0.0.1-dev"
 aunit = "^22.0.0"
-gnatcov = "^22.0.1"
-gnatformat = "^25.0.0"
 
 [[pins]]
 ieee1788 = { path = '..' }

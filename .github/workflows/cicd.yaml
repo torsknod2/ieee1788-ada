@@ -67,6 +67,11 @@ jobs:
       - name: Setup Alire
         uses: alire-project/setup-alire@v4
 
+      - name: Install FSF toolchain
+        uses: alire-project/alr-install@v2
+        with:
+          crates: gnat_native gprbuild gnatprove
+
       - name: Alire Validation Build
         run: alr --chdir=$GITHUB_WORKSPACE --non-interactive build --validation
 
@@ -96,6 +101,11 @@ jobs:
 
       - name: Setup Alire
         uses: alire-project/setup-alire@v4
+
+      - name: Install FSF toolchain
+        uses: alire-project/alr-install@v2
+        with:
+          crates: gnat_native gprbuild gnatcov
 
       - name: Alire Generate Configuration
         run: alr --chdir=$GITHUB_WORKSPACE/tests --non-interactive --force build --validation --stop-after=generation
