@@ -332,10 +332,16 @@ jobs:
           cache: pip
 
       - name: Install docutils
-        run: pip install docutils
+        run: pip install -U docutils
 
       - name: rst to ${{ matrix.format }}
+        id: rst_to
         run: for SOURCE in doc/rst/*.rst; do rst2${{ matrix.format }} --generator --time --source-link --strict --traceback --pep-preferences --rfc-references --create-links --output=doc/${{ matrix.format }} "${SOURCE}"; done
+
+      - name: Show help on failure
+        if: failure() && steps.rst_to.conclusion == 'failure'
+        run: rst2${{ matrix.format }} --help
+        continue-on-error: true
 
       - name: Upload Documentation Artifact
         uses: actions/upload-artifact@65c4c4a1ddee5b72f698fdd19549f0f0fb45cf08
