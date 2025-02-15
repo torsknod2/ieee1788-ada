@@ -48,6 +48,10 @@ updates:
       interval: "daily"
 
   - package-ecosystem: pip
+    assignees:
+      - "torsknod2"
+    reviewers:
+      - "torsknod2"
     directory: /
     schedule:
       interval: daily
