@@ -40,7 +40,7 @@ with AUnit.Run;
 with AUnit.Reporter.XML;
 with A_Suite;
 
-procedure Tests is
+procedure IEEE1788_Tests is
    procedure Run is new AUnit.Run.Test_Runner (A_Suite.Suite);
    Reporter_File : aliased Ada.Text_IO.File_Type;
    Reporter      : AUnit.Reporter.XML.XML_Reporter;
@@ -77,4 +77,4 @@ begin
          raise;
    end;
    Finally;
-end Tests;
+end IEEE1788_Tests;
