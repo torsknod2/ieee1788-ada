@@ -42,7 +42,7 @@
 --
 
 generic
-   type T is delta <> ;
+   type T is delta <>;
 package Ieee1788 is
    pragma Pure;
    Invalid_Arguments_To_Division : exception;
