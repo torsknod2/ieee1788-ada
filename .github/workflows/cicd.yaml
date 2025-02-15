@@ -217,8 +217,7 @@ jobs:
           disable-sudo: true
           egress-policy: block
           allowed-endpoints: >
-            github.com:443
-            objects.githubusercontent.com:443
+            pypi.org:443
 
       - name: Checkout code
         uses: actions/checkout@11bd71901bbe5b1630ceea73d27597364c9af683
@@ -266,8 +265,7 @@ jobs:
           disable-sudo: true
           egress-policy: block
           allowed-endpoints: >
-            github.com:443
-            objects.githubusercontent.com:443
+            pypi.org:443
 
       - name: Checkout code
         uses: actions/checkout@11bd71901bbe5b1630ceea73d27597364c9af683
