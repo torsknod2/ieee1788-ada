@@ -206,3 +206,129 @@ jobs:
         with:
           name: alire-archive
           path: alire/archive/
+
+  GNATdocHTML:
+    needs: pre-commit
+    runs-on: ubuntu-24.04
+    steps:
+      - name: Harden Runner
+        uses: step-security/harden-runner@cb605e52c26070c328afc4562f0b4ada7618a84e # v2.10.4
+        with:
+          disable-sudo: true
+          egress-policy: block
+          allowed-endpoints: >
+            github.com:443
+            objects.githubusercontent.com:443
+
+      - name: Checkout code
+        uses: actions/checkout@11bd71901bbe5b1630ceea73d27597364c9af683
+
+      - name: Setup Alire
+        uses: alire-project/setup-alire@678ded26f00993ff4ae2ab42248c44e887c1f2e7 # v4
+
+      - name: Install FSF toolchain with GNATdoc
+        uses: alire-project/alr-install@b9d8855d9aba7d57fa27e70c1e6f8218f8c127c0
+        with:
+          crates: gnat_native gprbuild gnatdoc
+
+      - name: Generate HTML Documentation
+        run: |
+          gnatdoc --output-dir=doc/html \
+                  --generate body \
+                  --backend html \
+                  --warnings \
+                  --html-oop-style \
+                  --style gnat \
+                  ieee1788.gpr
+
+      - name: Upload Documentation Artifact
+        uses: actions/upload-artifact@65c4c4a1ddee5b72f698fdd19549f0f0fb45cf08
+        with:
+          name: GNATdoc-html
+          path: doc/html
+
+      - name: Deploy to GitHub Pages
+        if: github.ref == 'refs/heads/main' && github.event_name == 'push'
+        uses: peaceiris/actions-gh-pages@v3
+        with:
+          github_token: ${{ secrets.GITHUB_TOKEN }}
+          publish_dir: doc/html
+
+  GNATdocRST:
+    needs: pre-commit
+    runs-on: ubuntu-24.04
+    steps:
+      - name: Harden Runner
+        uses: step-security/harden-runner@cb605e52c26070c328afc4562f0b4ada7618a84e # v2.10.4
+        with:
+          disable-sudo: true
+          egress-policy: block
+          allowed-endpoints: >
+            github.com:443
+            objects.githubusercontent.com:443
+
+      - name: Checkout code
+        uses: actions/checkout@11bd71901bbe5b1630ceea73d27597364c9af683
+
+      - name: Setup Alire
+        uses: alire-project/setup-alire@678ded26f00993ff4ae2ab42248c44e887c1f2e7 # v4
+
+      - name: Install FSF toolchain with GNATdoc
+        uses: alire-project/alr-install@b9d8855d9aba7d57fa27e70c1e6f8218f8c127c0
+        with:
+          crates: gnat_native gprbuild gnatdoc
+
+      - name: Generate RST Documentation
+        run: |
+          gnatdoc --output-dir=doc/rst \
+                  --generate body \
+                  --backend rst \
+                  --warnings \
+                  --html-oop-style \
+                  --style gnat \
+                  ieee1788.gpr
+
+      - name: Upload Documentation Artifact
+        uses: actions/upload-artifact@65c4c4a1ddee5b72f698fdd19549f0f0fb45cf08
+        with:
+          name: GNATdoc-rst
+          path: doc/rst
+  GNATdocRST2:
+    name: GNATdoc rst to ${{ matrix.format }}
+    strategy:
+      matrix:
+        format: [html, html4, html5, latex, man, odt, s5, xetex, xml]
+    needs: GNATdocRST
+    runs-on: ubuntu-24.04
+    steps:
+      - name: Harden Runner
+        uses: step-security/harden-runner@cb605e52c26070c328afc4562f0b4ada7618a84e # v2.10.4
+        with:
+          disable-sudo: true
+          egress-policy: block
+          allowed-endpoints: >
+            github.com:443
+            objects.githubusercontent.com:443
+
+      - name: Download Documentation Artifact
+        uses: actions/download-artifact@fa0a91b85d4f404e444e00e005971372dc801d16
+        with:
+          name: GNATdoc-rst
+          path: doc/rst
+
+      - name: Setup Python
+        uses: actions/setup-python@42375524e23c412d93fb67b49958b491fce71c38
+        with:
+          cache: pip
+
+      - name: Install docutils
+        run: pip install docutils
+
+      - name: rst to ${{ matrix.format }}
+        run: for SOURCE in doc/rst/*.rst; do rst2${{ matrix.format }} --generator --time --source-link --strict --traceback --pep-preferences --rfc-references --create-links --output=doc/${{ matrix.format }} "${SOURCE}"; done
+
+      - name: Upload Documentation Artifact
+        uses: actions/upload-artifact@65c4c4a1ddee5b72f698fdd19549f0f0fb45cf08
+        with:
+          name: GNATdoc-rst-${{ matrix.format }}
+          path: doc/${{ matrix.format }}
