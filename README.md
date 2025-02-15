@@ -5,7 +5,7 @@ Limitations are given by the operations available for the respective Ada data ty
 
 # Status Badges
 - [![Dependabot Updates](https://github.com/torsknod2/ieee1788-ada/actions/workflows/dependabot/dependabot-updates/badge.svg)](https://github.com/torsknod2/ieee1788-ada/actions/workflows/dependabot/dependabot-updates)
-- [![CI/ CD](https://github.com/torsknod2/ieee1788-ada/actions/workflows/ci.yml/badge.svg)](https://github.com/torsknod2/ieee1788-ada/actions/workflows/cicd.yml)
+- [![CI/ CD](https://github.com/torsknod2/ieee1788-ada/actions/workflows/cicd.yml/badge.svg)](https://github.com/torsknod2/ieee1788-ada/actions/workflows/cicd.yml)
 - [![Dependency Review](https://github.com/torsknod2/ieee1788-ada/actions/workflows/dependency-review.yml/badge.svg)](https://github.com/torsknod2/ieee1788-ada/actions/workflows/dependency-review.yml)
 - [![FlawFinder](https://github.com/torsknod2/ieee1788-ada/actions/workflows/flawfinder.yml/badge.svg)](https://github.com/torsknod2/ieee1788-ada/actions/workflows/flawfinder.yml)
 - [![OpenSSF Scorecard](https://api.scorecard.dev/projects/github.com/torsknod2/ieee1788-ada/badge)](https://scorecard.dev/viewer/?uri=github.com/torsknod2/ieee1788-ada)
