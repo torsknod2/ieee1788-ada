@@ -252,10 +252,11 @@ jobs:
           path: doc/html
 
       - name: Deploy to GitHub Pages
-        uses: actions/deploy-pages@d6db90164ac5ed86f2b6aed7e0febac5b3c0c03e
+        if: github.ref == 'refs/heads/main' || (startsWith(github.ref, 'refs/tags/') && github.event.base_ref == 'refs/heads/main')
+        uses: actions/deploy-pages@d6db90164ac5ed86f2b6aed7e0febac5b3c03e
         with:
-          artifact_name: GNATdocHTML
-          preview: ${{ github.ref == 'refs/heads/main' && github.event_name == 'push' && 'false' || 'true' }}
+          artifact_name: GNATdoc-html
+          preview: ${{ startsWith(github.ref, 'refs/tags/') && 'false' || 'true' }}
 
   GNATdocRST:
     needs: pre-commit
@@ -336,7 +337,7 @@ jobs:
 
       - name: rst to ${{ matrix.format }}
         id: rst_to
-        run: for SOURCE in doc/rst/*.rst; do rst2${{ matrix.format }} --generator --time --source-link --strict --traceback --pep-preferences --rfc-references --create-links --output=doc/${{ matrix.format }} "${SOURCE}"; done
+        run: for SOURCE in doc/rst/*.rst; do rst2${{ matrix.format }} --generator --time --source-link --strict --traceback --pep-references --rfc-references --create-links --output=doc/${{ matrix.format }} "${SOURCE}"; done
 
       - name: Show help on failure
         if: failure() && steps.rst_to.conclusion == 'failure'
