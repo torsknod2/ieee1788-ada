@@ -138,13 +138,13 @@ jobs:
 
       - name: Build and install gnatcov_rts_full
         run: |
-          find . -name gnatcov_rts_full.gpr
           export GNATCOV_RTS_BUILD_PATH="${{ runner.temp }}/gnatcov_rts-build"
           export GNATCOV_RTS_INSTALL_PATH="${{ runner.temp }}/gnatcov_rts-install"
           mkdir -p "${GNATCOV_RTS_BUILD_PATH}"
           cd "${GNATCOV_RTS_BUILD_PATH}"
-          gprbuild -p -P$GITHUB_WORKSPACE/alire_install/share/gnatcoverage/gnatcov_rts/gnatcov_rts_full.gpr
-          gprinstall -P$GITHUB_WORKSPACE/alire_install/share/gnatcoverage/gnatcov_rts/gnatcov_rts_full.gpr --prefix="${GNATCOV_RTS_INSTALL_PATH}"
+          gprbuild -p -P$GITHUB_WORKSPACE/alire_prefix/share/gnatcoverage/gnatcov_rts/gnatcov_rts_full.gpr
+          gprinstall -P$GITHUB_WORKSPACE/alire_prefix/share/gnatcoverage/gnatcov_rts/gnatcov_rts_full.gpr --prefix="${GNATCOV_RTS_INSTALL_PATH}"
+          find "${GNATCOV_RTS_INSTALL_PATH}"
           echo "GPR_PROJECT_PATH=${GNATCOV_RTS_INSTALL_PATH}/share/gpr:${GPR_PROJECT_PATH}" >> $GITHUB_ENV
 
       - name: Alire Generate Configuration
