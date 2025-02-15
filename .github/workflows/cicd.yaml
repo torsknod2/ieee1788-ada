@@ -138,6 +138,7 @@ jobs:
 
       - name: Build and install gnatcov_rts_full
         run: |
+          find . -name gnatcov_rts_full.gpr
           export GNATCOV_RTS_BUILD_PATH="${{ runner.temp }}/gnatcov_rts-build"
           export GNATCOV_RTS_INSTALL_PATH="${{ runner.temp }}/gnatcov_rts-install"
           mkdir -p "${GNATCOV_RTS_BUILD_PATH}"
