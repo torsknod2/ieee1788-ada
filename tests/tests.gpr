@@ -53,4 +53,12 @@ project Tests is
       for Artifacts (".") use ("share");
    end Install;
 
+   package Format is
+      for Indentation ("Ada") use "3"; -- this is the default
+      for Indentation_Kind ("Ada") use "spaces"; -- this is the default
+      for Width ("Ada") use "79"; -- this is the default
+      for End_Of_Line ("Ada") use "lf"; -- this is the default
+      for Charset ("Ada") use "us-ascii"; -- this is the default
+      --  for Ignore use "ignore.txt"; -- by default this attribute has no value
+   end Format;
 end Tests;

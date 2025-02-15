@@ -61,14 +61,22 @@ jobs:
             api.github.com:443
             objects.githubusercontent.com:443
 
+      - name: Checkout code
+        uses: actions/checkout@11bd71901bbe5b1630ceea73d27597364c9af683
+
       - name: Setup Alire
         uses: alire-project/setup-alire@v4
 
+      - name: Install FSF toolchain
+        uses: alire-project/alr-install@v2
+        with:
+          crates: gnat_native gprbuild gnatprove
+
       - name: Alire Validation Build
-        run: ./alr/bin/alr --chdir=$(pwd) --non-interactive build --validation
+        run: alr --chdir=$GITHUB_WORKSPACE --non-interactive build --validation
 
       - name: Alire GNATprove
-        run: ./alr/bin/alr --chdir=$(pwd) --non-interactive gnatprove --proof=progressive:all --level=4 -j0 --checks-as-errors=on --warnings=error
+        run: alr --chdir=$GITHUB_WORKSPACE --non-interactive gnatprove --proof=progressive:all --level=4 -j0 --checks-as-errors=on --warnings=error
 
       - name: Publish GNATprove Output
         uses: actions/upload-artifact@65c4c4a1ddee5b72f698fdd19549f0f0fb45cf08
@@ -88,22 +96,30 @@ jobs:
             api.github.com:443
             objects.githubusercontent.com:443
 
+      - name: Checkout code
+        uses: actions/checkout@11bd71901bbe5b1630ceea73d27597364c9af683
+
       - name: Setup Alire
         uses: alire-project/setup-alire@v4
 
+      - name: Install FSF toolchain
+        uses: alire-project/alr-install@v2
+        with:
+          crates: gnat_native gprbuild gnatcov
+
       - name: Alire Generate Configuration
-        run: ./alr/bin/alr --chdir=$(pwd)/tests --non-interactive --force build --validation --stop-after=generation
+        run: alr --chdir=$GITHUB_WORKSPACE/tests --non-interactive --force build --validation --stop-after=generation
 
       - name: Alire GNATcov Instrument
-        run: ./alr/bin/alr --chdir=$(pwd)/tests --non-interactive --force gnatcov instrument --level=stmt+mcdc --dump-trigger=atexit --projects=ieee1788.gpr
+        run: alr --chdir=$GITHUB_WORKSPACE/tests --non-interactive --force gnatcov instrument --level=stmt+mcdc --dump-trigger=atexit --projects=$GITHUB_WORKSPACE/ieee1788.gpr
 
       - name: Alire Build Instrumented Test Code
-        run: ./alr/bin/alr --chdir=$(pwd)/tests --non-interactive --force build --validation -- --src-subdirs=gnatcov-instr --implicit-with=gnatcov_rts_full
+        run: alr --chdir=$GITHUB_WORKSPACE/tests --non-interactive --force build --validation -- --src-subdirs=gnatcov-instr --implicit-with=gnatcov_rts_full
 
       - name: Alire Run Instrumented Tests
-        run: ./alr/bin/alr --chdir=$(pwd)/tests --non-interactive --force run --skip-build --args "$(pwd)/aunit_results.xml"
+        run: alr --chdir=$GITHUB_WORKSPACE/tests --non-interactive --force run --skip-build --args "$GITHUB_WORKSPACE/aunit_results.xml"
         env:
-          GNATCOV_TRACE_FILE: $(pwd)/
+          GNATCOV_TRACE_FILE: $GITHUB_WORKSPACE/
 
       - name: Publish AUnit Results
         uses: actions/upload-artifact@65c4c4a1ddee5b72f698fdd19549f0f0fb45cf08
@@ -112,16 +128,16 @@ jobs:
           path: aunit_results.xml
 
       - name: Alire GNATcov Report XCOV+
-        run: ./alr/bin/alr --chdir=$(pwd)/tests --non-interactive --force gnatcov coverage --annotate=xcov+ --output-dir $(pwd)/gnatcov_out --level=stmt+mcdc --projects ieee1788.gpr $(pwd)/*.srctrace
+        run: alr --chdir=$GITHUB_WORKSPACE/tests --non-interactive --force gnatcov coverage --annotate=xcov+ --output-dir $GITHUB_WORKSPACE/gnatcov_out --level=stmt+mcdc --projects ieee1788.gpr $GITHUB_WORKSPACE/*.srctrace
 
       - name: Alire GNATcov Report DHTML
-        run: ./alr/bin/alr --chdir=$(pwd)/tests --non-interactive --force gnatcov coverage --annotate=dhtml --output-dir $(pwd)/gnatcov_out --level=stmt+mcdc --projects ieee1788.gpr $(pwd)/*.srctrace
+        run: alr --chdir=$GITHUB_WORKSPACE/tests --non-interactive --force gnatcov coverage --annotate=dhtml --output-dir $GITHUB_WORKSPACE/gnatcov_out --level=stmt+mcdc --projects ieee1788.gpr $GITHUB_WORKSPACE/*.srctrace
 
       - name: Alire GNATcov Report HTML
-        run: ./alr/bin/alr --chdir=$(pwd)/tests --non-interactive --force gnatcov coverage --annotate=html+ --output-dir $(pwd)/gnatcov_out --level=stmt+mcdc --projects ieee1788.gpr $(pwd)/*.srctrace
+        run: alr --chdir=$GITHUB_WORKSPACE/tests --non-interactive --force gnatcov coverage --annotate=html+ --output-dir $GITHUB_WORKSPACE/gnatcov_out --level=stmt+mcdc --projects ieee1788.gpr $GITHUB_WORKSPACE/*.srctrace
 
       - name: Alire GNATcov Report Sarif
-        run: ./alr/bin/alr --chdir=$(pwd)/tests --non-interactive --force gnatcov coverage --annotate=sarif --output-dir $(pwd)/gnatcov_out --level=stmt+mcdc --projects ieee1788.gpr $(pwd)/*.srctrace
+        run: alr --chdir=$GITHUB_WORKSPACE/tests --non-interactive --force gnatcov coverage --annotate=sarif --output-dir $GITHUB_WORKSPACE/gnatcov_out --level=stmt+mcdc --projects ieee1788.gpr $GITHUB_WORKSPACE/*.srctrace
 
       - name: Publish GNATcov Output
         uses: actions/upload-artifact@65c4c4a1ddee5b72f698fdd19549f0f0fb45cf08
@@ -150,10 +166,10 @@ jobs:
         uses: alire-project/setup-alire@v4
 
       - name: Alire Publish
-        run: ./alr/bin/alr --chdir=$(pwd) --non-interactive --force publish --tar --skip-submit . $(GITHUB_SHA)
+        run: alr --chdir=$GITHUB_WORKSPACE --non-interactive --force publish --tar --skip-submit . $(GITHUB_SHA)
 
       - name: Publish Alire Archive
         uses: actions/upload-artifact@65c4c4a1ddee5b72f698fdd19549f0f0fb45cf08
         with:
           name: alire-archive
-          path: $(pwd)/alire/archive/
+          path: alire/archive/

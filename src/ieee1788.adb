@@ -1,42 +1,46 @@
--- IEEE 1788 Interval Arithmetic native library for Ada
--- Copyright (C) 2024,2025 Torsten Knodt
-
--- This library is free software; you can redistribute it and/or
--- modify it under the terms of the GNU Lesser General Public
--- License as published by the Free Software Foundation; either
--- version 3.0 of the License, or (at your option) any later version.
-
--- This library is distributed in the hope that it will be useful,
--- but WITHOUT ANY WARRANTY; without even the implied warranty of
--- MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU
--- Lesser General Public License for more details.
-
--- You should have received a copy of the GNU Lesser General Public
--- License along with this library; if not, write to the Free Software
--- Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301  USA
-
--- As a special exception to the GNU Lesser General Public License version 3
--- ("LGPL3"), the copyright holders of this Library give you permission to convey
--- to a third party a Combined Work that links statically or dynamically to this
--- Library without providing any Minimal Corresponding Source or Minimal
--- Application Code as set out in 4d or providing the installation information set
--- out in section 4e, provided that you comply with the other provisions of LGPL3
--- and provided that you meet, for the Application the terms and conditions of the
--- license(s) which apply to the Application.
-
--- Except as stated in this special exception, the provisions of LGPL3 will
--- continue to comply in full to this Library. If you modify this Library, you
--- may apply this exception to your version of this Library, but you are not
--- obliged to do so. If you do not wish to do so, delete this exception statement
--- from your version. This exception does not (and cannot) modify any license terms
--- which apply to the Application, with which you must still comply.
-
---  @filename ieee1788.adb
---  @brief Ada native IEEE 1788 library
+--  IEEE 1788 Interval Arithmetic native library for Ada
+--  Copyright (C) 2024,2025 Torsten Knodt
 --
---  https://standards.ieee.org/ieee/1788/4431/
---  https://standards.ieee.org/ieee/1788.1/6074/
+--  This library is free software; you can redistribute it and/or
+--  modify it under the terms of the GNU Lesser General Public
+--  License as published by the Free Software Foundation; either
+--  version 3.0 of the License, or (at your option) any later version.
 --
+--  This library is distributed in the hope that it will be useful,
+--  but WITHOUT ANY WARRANTY; without even the implied warranty of
+--  MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU
+--  Lesser General Public License for more details.
+--
+--  You should have received a copy of the GNU Lesser General Public
+--  License along with this library; if not, write to the
+--  Free Software Foundation, Inc.
+--  51 Franklin Street, Fifth Floor, Boston, MA 2110-1301, USA
+--
+--  As a special exception to the GNU Lesser General Public License version 3
+--  ("LGPL3"), the copyright holders of this Library give you permission to
+--  convey to a third party a Combined Work that links statically or
+--  dynamically to this Library without providing any Minimal Corresponding
+--  Source or Minimal Application Code as set out in 4d or providing the
+--  installation information set out in section 4e, provided that you comply
+--  with the other provisions of LGPL3 and provided that you meet, for the
+--  Application the terms and conditions of the license(s) which apply to the
+--  Application.
+--
+--  Except as stated in this special exception, the provisions of LGPL3 will
+--  continue to comply in full to this Library. If you modify this Library, you
+--  may apply this exception to your version of this Library, but you are not
+--  obliged to do so. If you do not wish to do so, delete this exception
+--  statement from your version. This exception does not (and cannot) modify
+--  any license terms which apply to the Application, with which you must
+--  still comply.
+
+--   @filename ieee1788.ads
+--   @brief Ada native IEEE 1788 library
+--
+--   https://standards.ieee.org/ieee/1788/4431/
+--   https://standards.ieee.org/ieee/1788.1/6074/
+--
+
 package body Ieee1788 is
    function Entire return Interval is
    begin
@@ -100,8 +104,8 @@ package body Ieee1788 is
    function "=" (Left, Right : Interval) return Boolean is
    begin
       return
-        Left.Lower_Bound = Right.Lower_Bound and
-        Left.Upper_Bound = Right.Upper_Bound;
+        Left.Lower_Bound = Right.Lower_Bound
+        and Left.Upper_Bound = Right.Upper_Bound;
    end "=";
 
    function "<" (Left, Right : Interval) return Boolean is
@@ -227,12 +231,11 @@ package body Ieee1788 is
               Left.Upper_Bound * Right.Upper_Bound);
       end MulPP;
       Table :
-        constant array
-          (Sign,
-           Sign) of access function (Left, Right : Interval) return Interval :=
-        ((MulNN'Access, MulNM'Access, MulNP'Access),
-         (MulMN'Access, MulMM'Access, MulMP'Access),
-         (MulPN'Access, MulPM'Access, MulPP'Access));
+        constant array (Sign, Sign)
+        of access function (Left, Right : Interval) return Interval :=
+          ((MulNN'Access, MulNM'Access, MulNP'Access),
+           (MulMN'Access, MulMM'Access, MulMP'Access),
+           (MulPN'Access, MulPM'Access, MulPP'Access));
       Signs : constant array (1 .. 2, 1 .. 2) of Sign :=
         ((Sign (Left.Lower_Bound), Sign (Left.Upper_Bound)),
          (Sign (Right.Lower_Bound), Sign (Right.Upper_Bound)));
@@ -243,7 +246,7 @@ package body Ieee1788 is
             else (if Signs (2, 1) >= 0 then 1 else 0)),
            (if Signs (1, 2) <= 0 then -1
             else (if Signs (1, 1) >= 0 then 1 else 0)))
-          (Left, Right);
+             (Left, Right);
    end "*";
 
    function "/" (Left, Right : Interval) return Interval is
@@ -317,12 +320,11 @@ package body Ieee1788 is
               Left.Upper_Bound * Right.Lower_Bound);
       end DivPP;
       Table :
-        constant array
-          (Sign,
-           Sign) of access function (Left, Right : Interval) return Interval :=
-        ((DivNN'Access, DivNM'Access, DivNP'Access),
-         (DivMN'Access, DivMM'Access, DivMP'Access),
-         (DivPN'Access, DivPM'Access, DivPP'Access));
+        constant array (Sign, Sign)
+        of access function (Left, Right : Interval) return Interval :=
+          ((DivNN'Access, DivNM'Access, DivNP'Access),
+           (DivMN'Access, DivMM'Access, DivMP'Access),
+           (DivPN'Access, DivPM'Access, DivPP'Access));
       Signs : constant array (1 .. 2, 1 .. 2) of Sign :=
         ((Sign (Left.Lower_Bound), Sign (Left.Upper_Bound)),
          (Sign (Right.Lower_Bound), Sign (Right.Upper_Bound)));
@@ -334,7 +336,7 @@ package body Ieee1788 is
             else (if Signs (2, 1) >= 0 then 1 else 0)),
            (if Signs (1, 2) <= 0 then -1
             else (if Signs (1, 1) >= 0 then 1 else 0)))
-          (Left, Right);
+             (Left, Right);
    end "/";
 
    function "abs" (Right : Interval) return Interval is
