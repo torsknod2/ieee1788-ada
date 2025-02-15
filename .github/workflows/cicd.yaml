@@ -350,8 +350,8 @@ jobs:
         with:
           cache: pip
 
-      - name: Install docutils
-        run: pip install -U docutils sphinxcontrib-adadomain
+      - name: Install docutils and sphinxcontrib-adadomain
+        run: pip install -U docutils git+https://github.com/AdaCore/sphinxcontrib-adadomain
 
       - name: rst to ${{ matrix.format }}
         id: rst_to
