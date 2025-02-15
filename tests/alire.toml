@@ -41,7 +41,7 @@ tags = ["ada", "math", "library"]
 authors = ["Torsten Knodt"]
 maintainers = ["Torsten Knodt <torsten.knodt@datas-world.de>"]
 
-executables = ["tests"]
+executables = ["ieee1788_tests"]
 
 [[depends-on]]
 ieee1788 = "~0.0.1-dev"
