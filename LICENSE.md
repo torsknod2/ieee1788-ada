@@ -1,6 +1,7 @@
 # License
 
 ## This library
+
 IEEE 1788 Interval Arithmetic native library for Ada
 Copyright (C) 2024,2025 Torsten Knodt
 

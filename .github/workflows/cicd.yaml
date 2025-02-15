@@ -49,16 +49,45 @@ concurrency:
 permissions: {}
 
 jobs:
+  pre-commit:
+    runs-on: ubuntu-24.04
+    steps:
+      - name: Harden Runner
+        uses: step-security/harden-runner@446798f8213ac2e75931c1b0769676d927801858 # v2.10.0
+        with:
+          disable-sudo: true
+          egress-policy: block
+          allowed-endpoints: >
+            files.pythonhosted.org:443
+            github.com:443
+            proxy.golang.org:443
+            pypi.org:443
+            registry.npmjs.org:443
+
+      - name: Checkout code
+        uses: actions/checkout@11bd71901bbe5b1630ceea73d27597364c9af683
+
+      - name: Setup Python
+        uses: actions/setup-python@82c7e631bb3cdc910f68e0081d67478d79c6982d
+        with:
+          cache: pip
+
+      - name: Install pre-commit
+        run: pip install pre-commit
+
+      - name: Run pre-commit
+        run: pre-commit run --all-files --show-diff-on-failure
+
   GNATprove:
     runs-on: ubuntu-24.04
     steps:
       - name: Harden Runner
-        uses: step-security/harden-runner@cb605e52c26070c328afc4562f0b4ada7618a84e
+        uses: step-security/harden-runner@446798f8213ac2e75931c1b0769676d927801858 # v2.10.0
         with:
+          disable-sudo: true
           egress-policy: block
           allowed-endpoints: >
             github.com:443
-            api.github.com:443
             objects.githubusercontent.com:443
 
       - name: Checkout code
@@ -88,12 +117,12 @@ jobs:
     runs-on: ubuntu-24.04
     steps:
       - name: Harden Runner
-        uses: step-security/harden-runner@cb605e52c26070c328afc4562f0b4ada7618a84e
+        uses: step-security/harden-runner@446798f8213ac2e75931c1b0769676d927801858 # v2.10.0
         with:
+          disable-sudo: true
           egress-policy: block
           allowed-endpoints: >
             github.com:443
-            api.github.com:443
             objects.githubusercontent.com:443
 
       - name: Checkout code
@@ -146,8 +175,7 @@ jobs:
           path: gnatcov_out
 
   Publish:
-    if: github.event_name == 'push' && startsWith(github.ref, 'refs/tags/')
-    needs: [GNATprove, Test]
+    needs: [GNATprove, Test, pre-commit]
     runs-on: ubuntu-24.04
     steps:
       - name: Harden Runner
@@ -171,7 +199,7 @@ jobs:
           crates: gnat_native gprbuild
 
       - name: Alire Publish
-        run: alr --chdir=$GITHUB_WORKSPACE --non-interactive --force publish --tar --skip-submit . $(GITHUB_SHA)
+        run: alr --chdir=$GITHUB_WORKSPACE --non-interactive --force publish ${{ github.event_name == 'push' && startsWith(github.ref, 'refs/tags/') && '' || '--skip-submit' }} --tar . ${{ github.sha }}
 
       - name: Publish Alire Archive
         uses: actions/upload-artifact@65c4c4a1ddee5b72f698fdd19549f0f0fb45cf08
