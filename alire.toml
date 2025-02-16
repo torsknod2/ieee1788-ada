@@ -40,3 +40,4 @@ tags = ["ada", "math", "library"]
 
 authors = ["Torsten Knodt"]
 maintainers = ["Torsten Knodt <torsten.knodt@datas-world.de>"]
+maintainer_logins = ["torsknod2"]

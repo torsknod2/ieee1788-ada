@@ -211,6 +211,10 @@ jobs:
       #   with:
       #     crates: gnatcov
 
+      - name: Make bin files executable
+        run: |
+          find $GITHUB_WORKSPACE -type d -name bin -exec sh -c 'find "{}" -type f -print0 | xargs -0 chmod -v +x \;' \;
+
       - name: Alire GNATcov ${{ matrix.level }} Report in ${{ matrix.annotate }}
         run: |
           cd $GITHUB_WORKSPACE/tests
