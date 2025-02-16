@@ -1,4 +1,4 @@
-coveragepy
-docutils
-pre-commit
+coveragepy==1.6.0
+docutils==0.21.2
+pre-commit==4.1.0
 git+https://github.com/AdaCore/sphinxcontrib-adadomain

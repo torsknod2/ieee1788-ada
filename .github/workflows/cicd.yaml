@@ -75,7 +75,7 @@ jobs:
           cache: pip
 
       - name: Install pre-commit
-        run: pip install pre-commit
+        run: pip install pre-commit==4.1.0
 
       - name: Run pre-commit
         run: pre-commit run --all-files --show-diff-on-failure
@@ -219,11 +219,12 @@ jobs:
           cache: pip
 
       - name: Install coveragepy
-        run: pip install coveragepy
+        run: pip install coveragepy==1.6.0
 
       - uses: alire-project/gnatcov-to-codecovio-action@54d55a0259f7b7a272cb25232f0d29a57ee2b699
         with:
           fail_ci_if_error: true
+          token: ${{ secrets.CODECOV_TOKEN }}
           verbose: true
 
   Publish:
@@ -379,7 +380,7 @@ jobs:
           cache: pip
 
       - name: Install docutils and sphinxcontrib-adadomain
-        run: pip install -U docutils git+https://github.com/AdaCore/sphinxcontrib-adadomain
+        run: pip install -U docutils==0.21.2 git+https://github.com/AdaCore/sphinxcontrib-adadomain
 
       - name: rst to ${{ matrix.format }}
         id: rst_to
