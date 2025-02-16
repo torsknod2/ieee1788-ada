@@ -34,47 +34,11 @@
 --  any license terms which apply to the Application, with which you must
 --  still comply.
 
-with Ada.Command_Line;
-with Ada.Text_IO;
-with AUnit.Run;
-with AUnit.Reporter.XML;
-with Suites;
+with AUnit.Test_Suites;
+with To_Interval_Test;
 
-procedure IEEE1788_Tests is
-   procedure Run is new AUnit.Run.Test_Runner (Suites.Master_Suite);
-   Reporter_File : aliased Ada.Text_IO.File_Type;
-   Reporter      : AUnit.Reporter.XML.XML_Reporter;
-   procedure Finally;
-   procedure Finally is
-   begin
-      begin
-         Ada.Text_IO.Close (Reporter_File);
-      exception
-         when others =>
-            null;
-      end;
-      begin
-         Ada.Text_IO.Delete (Reporter_File);
-      exception
-         when others =>
-            null;
-      end;
-      pragma Annotate (Xcov, Dump_Buffers);
-   end Finally;
-begin
-   if Ada.Command_Line.Argument_Count >= 1 then
-      Ada.Text_IO.Create
-        (Reporter_File, Ada.Text_IO.Out_File, Ada.Command_Line.Argument (1));
-      Reporter.Set_File (Reporter_File'Unchecked_Access);
-   else
-      null;
-   end if;
-   begin
-      Run (Reporter);
-   exception
-      when others =>
-         Finally;
-         raise;
-   end;
-   Finally;
-end IEEE1788_Tests;
+generic
+   type G is delta <> ;
+package Generic_Suite is
+   function Suite return AUnit.Test_Suites.Access_Test_Suite;
+end Generic_Suite;
