@@ -34,24 +34,48 @@
 --  any license terms which apply to the Application, with which you must
 --  still comply.
 
---   @filename ieee1788.ads
---   @brief Ada native IEEE 1788 library
+--  @summary
+--  A native Ada implementation of IEEE 1788 interval arithmetic.
 --
---   https://standards.ieee.org/ieee/1788/4431/
---   https://standards.ieee.org/ieee/1788.1/6074/
+--  @description
+--  This library implements the IEEE 1788.1 specification for interval
+--  arithmetic. It provides basic arithmetic operations and comparisons
+--  for intervals.
 --
+--  @see https://standards.ieee.org/ieee/1788/4431/
+--  @see https://standards.ieee.org/ieee/1788.1/6074/
 
 generic
-   type T is delta <>;
+   --  @param T The underlying floating-point type for interval bounds
+   type T is delta <> ;
 package Ieee1788 is
    pragma Pure;
+
+   --  @summary Exception raised for invalid division arguments
    Invalid_Arguments_To_Division : exception;
+
+   --  @summary An interval represents a connected range of numbers
    type Interval is private;
+
+   --  @summary Array of intervals
    type IntervalElements is array (Integer range <>) of Interval;
+
+   --  @summary Array of numbers
    type TElements is array (Integer range <>) of T;
+
+   --  @summary Converts a single number to an interval [x,x]
+   --  @param Right The number to convert
+   --  @return An interval with equal lower and upper bounds
    function To_Interval (Right : T) return Interval;
+
+   --  @summary Creates an interval from two bounds
+   --  @param Lower_Bound The lower interval bound
+   --  @param Upper_Bound The upper interval bound
+   --  @return The resulting interval [Lower_Bound, Upper_Bound]
+   --  @pre Lower_Bound <= Upper_Bound
    function To_Interval (Lower_Bound, Upper_Bound : T) return Interval
    with Pre => Lower_Bound <= Upper_Bound;
+
    function To_String (Right : Interval) return String;
    function Hull (Left, Right : Interval) return Interval;
    function Hull (Left, Right : T) return Interval;
@@ -71,14 +95,20 @@ package Ieee1788 is
    function "abs" (Right : Interval) return Interval;
    function Entire return Interval;
 private
+   --  @summary Internal representation of an interval
    type Interval is record
+      --  @summary Lower bound of the interval
       Lower_Bound : T;
+      --  @summary Upper bound of the interval
       Upper_Bound : T;
    end record
    with
      Type_Invariant =>
        (Lower_Bound <= Upper_Bound and Upper_Bound >= Lower_Bound);
+
+   --  @summary Sign of a number (-1, 0, +1)
    subtype Sign is Integer range -1 .. 1;
+
    function Sgn (Right : T) return Sign
    with
      Post =>
