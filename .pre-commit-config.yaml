@@ -36,3 +36,13 @@ repos:
   hooks:
   - id: remove-crlf
 #  - id: forbid-tabs
+
+- repo: local
+  hooks:
+    - id: version-check
+      name: Check semantic versions
+      entry: .hooks/version_check.py
+      language: python
+      additional_dependencies: ['tomlkit', 'semver']
+      files: 'alire\.toml$'
+      pass_filenames: true
