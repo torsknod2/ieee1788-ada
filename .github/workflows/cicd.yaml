@@ -117,9 +117,6 @@ jobs:
 
   Test:
     runs-on: ubuntu-24.04
-    strategy:
-      matrix:
-        level: ["branch", "stmt+mcdc"]
     steps:
       - name: Harden Runner
         uses: step-security/harden-runner@cb605e52c26070c328afc4562f0b4ada7618a84e # v2.10.4
@@ -155,8 +152,8 @@ jobs:
       - name: Alire Generate Configuration
         run: alr --chdir=$GITHUB_WORKSPACE/tests --non-interactive --force build --validation --stop-after=generation
 
-      - name: Alire GNATcov ${{ matrix.level }} Instrument
-        run: alr --chdir=$GITHUB_WORKSPACE/tests --non-interactive --force gnatcov instrument --level=${{ matrix.level }} --dump-trigger=atexit --projects=$GITHUB_WORKSPACE/ieee1788.gpr
+      - name: Alire GNATcov Instrument
+        run: alr --chdir=$GITHUB_WORKSPACE/tests --non-interactive --force gnatcov instrument --level=stmt+mcdc --dump-trigger=atexit --projects=$GITHUB_WORKSPACE/ieee1788.gpr
 
       - name: Alire Build Instrumented Test Code
         env:
@@ -169,13 +166,13 @@ jobs:
       - name: Publish AUnit Results
         uses: actions/upload-artifact@65c4c4a1ddee5b72f698fdd19549f0f0fb45cf08
         with:
-          name: aunit_results_${{ matrix.level }}.xml
+          name: aunit_results.xml
           path: aunit_results.xml
 
       - name: Publish All
         uses: actions/upload-artifact@65c4c4a1ddee5b72f698fdd19549f0f0fb45cf08
         with:
-          name: Test_Result_${{ matrix.level }}
+          name: Test_Result
           path: .
 
   UploadCodeCoverage:
@@ -203,7 +200,7 @@ jobs:
       - name: Download Test Artifact
         uses: actions/download-artifact@fa0a91b85d4f404e444e00e005971372dc801d16
         with:
-          name: Test_Result_${{ matrix.level }}
+          name: Test_Result
 
       - name: Setup Alire
         uses: alire-project/setup-alire@678ded26f00993ff4ae2ab42248c44e887c1f2e7 # v4
