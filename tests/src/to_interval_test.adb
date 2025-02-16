@@ -35,34 +35,31 @@
 --  still comply.
 
 with AUnit.Assertions;
-with IEEE1788;
+with Ieee1788;
 
 package body To_Interval_Test is
-   package IEEE1788_Instance is new IEEE1788 (G);
+   package Ieee1788_Instance is new Ieee1788 (G);
    function Name (T : Test) return AUnit.Message_String is
       pragma Unreferenced (T);
    begin
-      return AUnit.Format ("Test IEEE1788 To_Interval function");
+      return AUnit.Format ("Test IEEE 1788 To_Interval function");
    end Name;
 
    procedure Run_Test (T : in out Test) is
       pragma Unreferenced (T);
    begin
       AUnit.Assertions.Assert
-        (IEEE1788_Instance.IntervalToText
-           (IEEE1788_Instance.To_Interval (G'First)),
+        (Ieee1788_Instance.To_String (Ieee1788_Instance.To_Interval (G'First)),
          "[" & G'Image (G'First) & "," & G'Image (G'First) & "]",
          "Test Low");
       if G'First < 0.0 and G'Last > 0.0 then
          AUnit.Assertions.Assert
-           (IEEE1788_Instance.IntervalToText
-              (IEEE1788_Instance.To_Interval (0.0)),
+           (Ieee1788_Instance.To_String (Ieee1788_Instance.To_Interval (0.0)),
             "[" & G'Image (0.0) & "," & G'Image (0.0) & "]",
             "Test High");
       end if;
       AUnit.Assertions.Assert
-        (IEEE1788_Instance.IntervalToText
-           (IEEE1788_Instance.To_Interval (G'Last)),
+        (Ieee1788_Instance.To_String (Ieee1788_Instance.To_Interval (G'Last)),
          "[" & G'Image (G'Last) & "," & G'Image (G'Last) & "]",
          "Test High");
    end Run_Test;

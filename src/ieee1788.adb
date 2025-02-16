@@ -57,6 +57,16 @@ package body Ieee1788 is
       return (Lower_Bound => Lower_Bound, Upper_Bound => Upper_Bound);
    end To_Interval;
 
+   function To_String (Right : Interval) return String is
+   begin
+      return
+        "["
+        & T'Image (Right.Lower_Bound)
+        & ","
+        & T'Image (Right.Upper_Bound)
+        & "]";
+   end To_String;
+
    function Hull (Left, Right : T) return Interval is
    begin
       return

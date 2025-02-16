@@ -35,10 +35,9 @@
 --  still comply.
 
 with AUnit.Test_Suites;
-with To_Interval_Test;
 
 generic
-   type G is delta <> ;
+   type G is delta <>;
 package Generic_Suite is
    function Suite return AUnit.Test_Suites.Access_Test_Suite;
 end Generic_Suite;

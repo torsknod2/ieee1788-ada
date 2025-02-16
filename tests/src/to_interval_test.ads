@@ -37,7 +37,7 @@
 with AUnit.Simple_Test_Cases;
 
 generic
-   type G is delta <> ;
+   type G is delta <>;
 package To_Interval_Test is
    type Test is new AUnit.Simple_Test_Cases.Test_Case with null record;
    type Test_Access is access all Test;

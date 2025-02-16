@@ -42,7 +42,7 @@
 --
 
 generic
-   type T is delta <>;
+   type T is delta <> ;
 package Ieee1788 is
    pragma Pure;
    Invalid_Arguments_To_Division : exception;
@@ -52,6 +52,7 @@ package Ieee1788 is
    function To_Interval (Right : T) return Interval;
    function To_Interval (Lower_Bound, Upper_Bound : T) return Interval
    with Pre => Lower_Bound <= Upper_Bound;
+   function To_String (Right : Interval) return String;
    function Hull (Left, Right : Interval) return Interval;
    function Hull (Left, Right : T) return Interval;
    function Hull (Right : IntervalElements) return Interval;

@@ -5,21 +5,29 @@
 (So far partial) Ada native implementation of IEEE 1788 .
 The goal is to have interval arithmetic support for all:
 
-* integer
-* modulo
-* delta
-* and floating point
-data types in Ada.
-Limitations are given by the operations available for the respective Ada data types.
+- integer
+- modulo
+- delta
+- and floating point
+  data types in Ada.
+  Limitations are given by the operations available for the respective Ada data types.
+
+## Maturity
+
+This library is currently in early implementation, traceability to the
+respective standard documents is not provided and even for the implemented
+functionality, reviews against the standard have not even begun.
+Do not use it not baselined/ unreleased or with a baseline/ release below
+`1.0.0` in production, even if neither safety- nor security-relevant.
 
 ## Status Badges
 
-* [![Dependabot Updates][dependabot-badge]][dependabot-url]
-* [![CI/ CD][cicd-badge]][cicd-url]
-* [![Dependency Review][dep-review-badge]][dep-review-url]
-* [![FlawFinder][flawfinder-badge]][flawfinder-url]
-* [![OpenSSF Scorecard][scorecard-badge]][scorecard-url]
-* [![OpenSSF Best Practices][best-practices-badge]][best-practices-url]
+- [![Dependabot Updates][dependabot-badge]][dependabot-url]
+- [![CI/ CD][cicd-badge]][cicd-url]
+- [![Dependency Review][dep-review-badge]][dep-review-url]
+- [![FlawFinder][flawfinder-badge]][flawfinder-url]
+- [![OpenSSF Scorecard][scorecard-badge]][scorecard-url]
+- [![OpenSSF Best Practices][best-practices-badge]][best-practices-url]
 
 [dependabot-badge]: https://github.com/torsknod2/ieee1788-ada/actions/workflows/dependabot/dependabot-updates/badge.svg
 [dependabot-url]: https://github.com/torsknod2/ieee1788-ada/actions/workflows/dependabot/dependabot-updates
@@ -40,12 +48,12 @@ Limitations are given by the operations available for the respective Ada data ty
 
 Building and testing requires the following tools to be installed:
 
-* Alire package manager
-* GNAT native toolchain
-* GPRBuild
-* GNATcov (for coverage analysis)
-* GNATformat (for code formatting)
-* GNATprove (for formal verification)
+- Alire package manager
+- GNAT native toolchain
+- GPRBuild
+- GNATcov (for coverage analysis)
+- GNATformat (for code formatting)
+- GNATprove (for formal verification)
 
 ### Testing and Analysis
 
@@ -71,12 +79,12 @@ alr run --skip-build --args "aunit_results.xml"
 
 Coverage reports can be generated in various formats:
 
-* XCOV+
-* DHTML
-* HTML+
-* SARIF
-in the `gnatcov_out` directory.
-TODO: Describe how.
+- XCOV+
+- DHTML
+- HTML+
+- SARIF
+  in the `gnatcov_out` directory.
+  TODO: Describe how.
 
 ### Documentation
 
@@ -98,6 +106,6 @@ If you want to learn more about creating good readme files then refer the follow
 [guidelines](https://docs.microsoft.com/en-us/azure/devops/repos/git/create-a-readme?view=azure-devops).
 You can also seek inspiration from the below readme files:
 
-* [ASP.NET Core](https://github.com/aspnet/Home)
-* [Visual Studio Code](https://github.com/Microsoft/vscode)
-* [Chakra Core](https://github.com/Microsoft/ChakraCore)
+- [ASP.NET Core](https://github.com/aspnet/Home)
+- [Visual Studio Code](https://github.com/Microsoft/vscode)
+- [Chakra Core](https://github.com/Microsoft/ChakraCore)

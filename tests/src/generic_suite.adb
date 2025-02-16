@@ -34,8 +34,6 @@
 --  any license terms which apply to the Application, with which you must
 --  still comply.
 
-with AUnit.Test_Suites;
-with AUnit.Test_Cases;
 with To_Interval_Test;
 
 package body Generic_Suite is
