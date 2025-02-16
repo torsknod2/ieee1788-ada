@@ -22,25 +22,22 @@ Do not use it not baselined/ unreleased or with a baseline/ release below
 
 ## Status Badges
 
-- [![Dependabot Updates][dependabot-badge]][dependabot-url]
+- [![Best Practices][best-practices-badge]][best-practices-url]
 - [![CI/ CD][cicd-badge]][cicd-url]
+- [![Code Coverage][codecov-badge]][codecov-url]
 - [![Dependency Review][dep-review-badge]][dep-review-url]
-- [![FlawFinder][flawfinder-badge]][flawfinder-url]
-- [![OpenSSF Scorecard][scorecard-badge]][scorecard-url]
-- [![OpenSSF Best Practices][best-practices-badge]][best-practices-url]
+- [![Dependabot Updates][dependabot-badge]][dependabot-url]
 
-[dependabot-badge]: https://github.com/torsknod2/ieee1788-ada/actions/workflows/dependabot/dependabot-updates/badge.svg
-[dependabot-url]: https://github.com/torsknod2/ieee1788-ada/actions/workflows/dependabot/dependabot-updates
-[cicd-badge]: https://github.com/torsknod2/ieee1788-ada/actions/workflows/cicd.yaml/badge.svg
-[cicd-url]: https://github.com/torsknod2/ieee1788-ada/actions/workflows/cicd.yaml
-[dep-review-badge]: https://github.com/torsknod2/ieee1788-ada/actions/workflows/dependency-review.yml/badge.svg
-[dep-review-url]: https://github.com/torsknod2/ieee1788-ada/actions/workflows/dependency-review.yml
-[flawfinder-badge]: https://github.com/torsknod2/ieee1788-ada/actions/workflows/flawfinder.yml/badge.svg
-[flawfinder-url]: https://github.com/torsknod2/ieee1788-ada/actions/workflows/flawfinder.yml
-[scorecard-badge]: https://api.scorecard.dev/projects/github.com/torsknod2/ieee1788-ada/badge
-[scorecard-url]: https://scorecard.dev/viewer/?uri=github.com/torsknod2/ieee1788-ada
 [best-practices-badge]: https://bestpractices.coreinfrastructure.org/projects/10022/badge
 [best-practices-url]: https://bestpractices.coreinfrastructure.org/projects/10022
+[cicd-badge]: https://github.com/torsknod2/ieee1788-ada/actions/workflows/cicd.yaml/badge.svg
+[cicd-url]: https://github.com/torsknod2/ieee1788-ada/actions/workflows/cicd.yaml
+[codecov-badge]: https://codecov.io/gh/torsknod2/ieee1788-ada/graph/badge.svg?token=KSOUO8UJSL
+[codecov-url]: https://codecov.io/gh/torsknod2/ieee1788-ada
+[dep-review-badge]: https://github.com/torsknod2/ieee1788-ada/actions/workflows/dependency-review.yml/badge.svg
+[dep-review-url]: https://github.com/torsknod2/ieee1788-ada/actions/workflows/dependency-review.yml
+[dependabot-badge]: https://github.com/torsknod2/ieee1788-ada/actions/workflows/dependabot/dependabot-updates/badge.svg
+[dependabot-url]: https://github.com/torsknod2/ieee1788-ada/actions/workflows/dependabot/dependabot-updates
 
 ## Getting Started
 

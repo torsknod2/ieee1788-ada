@@ -169,31 +169,27 @@ jobs:
           name: aunit_results.xml
           path: aunit_results.xml
 
-      # TODO Add this later, when we also have object coverage
-      # - name: Alire GNATcov Report ASM
-      #   run: alr --chdir=$GITHUB_WORKSPACE/tests --non-interactive --force gnatcov coverage --annotate=asm --output-dir $GITHUB_WORKSPACE/gnatcov_out --level=stmt+mcdc --projects ieee1788.gpr $GITHUB_WORKSPACE/tests/*.srctrace
+  UploadCodeCoverage:
+    needs: [Test]
+    runs-on: ubuntu-24.04
+    strategy:
+      matrix:
+        # TODO Add asm later, when we also have object coverage
+        # TODO "GNATquilt" is missing for dhtml, whatever this is.
+        # Wait for SARIF support
+        annotate: ["xcov+", "html+", "report"]
+    steps:
+      - name: Alire GNATcov Report in ${{ matrix.annotate }}
+        run: alr --chdir=$GITHUB_WORKSPACE/tests --non-interactive --force gnatcov coverage --annotate=${{ matrix.annotate }} --output-dir $GITHUB_WORKSPACE/gnatcov_out --level=stmt+mcdc --projects ieee1788.gpr $GITHUB_WORKSPACE/tests/*.srctrace
 
-      - name: Alire GNATcov Report XCOV+
-        run: alr --chdir=$GITHUB_WORKSPACE/tests --non-interactive --force gnatcov coverage --annotate=xcov+ --output-dir $GITHUB_WORKSPACE/gnatcov_out --level=stmt+mcdc --projects ieee1788.gpr $GITHUB_WORKSPACE/tests/*.srctrace
-
-      - name: Alire GNATcov Report HTML
-        run: alr --chdir=$GITHUB_WORKSPACE/tests --non-interactive --force gnatcov coverage --annotate=html+ --output-dir $GITHUB_WORKSPACE/gnatcov_out --level=stmt+mcdc --projects ieee1788.gpr $GITHUB_WORKSPACE/tests/*.srctrace
-
-      # TODO "GNATquilt" is missing, whatever this is.
-      # - name: Alire GNATcov Report DHTML
-      #   run: alr --chdir=$GITHUB_WORKSPACE/tests --non-interactive --force gnatcov coverage --annotate=dhtml --output-dir $GITHUB_WORKSPACE/gnatcov_out --level=stmt+mcdc --projects ieee1788.gpr $GITHUB_WORKSPACE/tests/*.srctrace
-
-      - name: Alire GNATcov Report Sarif
-        run: alr --chdir=$GITHUB_WORKSPACE/tests --non-interactive --force gnatcov coverage --annotate=report --output-dir $GITHUB_WORKSPACE/gnatcov_out --level=stmt+mcdc --projects ieee1788.gpr $GITHUB_WORKSPACE/tests/*.srctrace
-
-      - name: Publish GNATcov Output
+      - name: Publish Coverage Output
         uses: actions/upload-artifact@65c4c4a1ddee5b72f698fdd19549f0f0fb45cf08
         with:
           name: gnatcov_out
-          path: gnatcov_out
+          path: .
 
   PublishCodeCoverage:
-    needs: [Test]
+    needs: [UploadCodeCoverage]
     runs-on: ubuntu-24.04
     steps:
       - name: Harden Runner
