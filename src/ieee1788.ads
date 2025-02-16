@@ -46,69 +46,197 @@
 --  @see https://standards.ieee.org/ieee/1788.1/6074/
 
 generic
-   --  @param T The underlying floating-point type for interval bounds
+   --  The underlying numeric type for interval bounds
+   --  Must be a fixed or numeric type supporting exact arithmetic
+   --  @see IEEE 1788-2015 Section 7.2 "computational data types"
    type T is delta <> ;
 package Ieee1788 is
    pragma Pure;
 
-   --  @summary Exception raised for invalid division arguments
+   --  Exception raised when division by an interval containing zero is attempted
+   --  Raised by "/" operator when Right operand contains zero
+   --  @see IEEE 1788-2015 Section 8.2 "arithmetic operations"
    Invalid_Arguments_To_Division : exception;
 
-   --  @summary An interval represents a connected range of numbers
+   --  Represents a closed interval [a,b] where a <= b
+   --  Basic interval type supporting IEEE 1788 operations
+   --  @see IEEE 1788-2015 Section 6.2 "interval types"
    type Interval is private;
 
-   --  @summary Array of intervals
+   --  Array of intervals for bulk operations
+   --  Used for operations on multiple intervals
+   --  @see IEEE 1788-2015 Section 6.2 "interval types"
    type IntervalElements is array (Integer range <>) of Interval;
 
-   --  @summary Array of numbers
+   --  Array of numbers for bulk operations
+   --  Used for operations on multiple numbers
+   --  @see IEEE 1788-2015 Section 6.2 "interval types"
    type TElements is array (Integer range <>) of T;
 
-   --  @summary Converts a single number to an interval [x,x]
-   --  @param Right The number to convert
-   --  @return An interval with equal lower and upper bounds
+   --  Creates a degenerate interval [x,x]
+   --  @param Right The value to enclose
+   --  @return An interval containing only Right
+   --  @see IEEE 1788-2015 Section 6.3 "interval literals"
    function To_Interval (Right : T) return Interval;
 
-   --  @summary Creates an interval from two bounds
-   --  @param Lower_Bound The lower interval bound
-   --  @param Upper_Bound The upper interval bound
-   --  @return The resulting interval [Lower_Bound, Upper_Bound]
+   --  Creates an interval from explicit bounds
+   --  @param Lower_Bound The lower bound
+   --  @param Upper_Bound The upper bound
+   --  @return Interval [Lower_Bound,Upper_Bound]
    --  @pre Lower_Bound <= Upper_Bound
+   --  @see IEEE 1788-2015 Section 6.3 "interval literals"
    function To_Interval (Lower_Bound, Upper_Bound : T) return Interval
    with Pre => Lower_Bound <= Upper_Bound;
 
+   --  Converts interval to string representation
+   --  @param Right The interval to convert
+   --  @return String in format "[lower,upper]"
+   --  @see IEEE 1788-2015 Section 6.3 "interval literals"
    function To_String (Right : Interval) return String;
+
+   --  Computes interval hull of two intervals
+   --  @param Left First interval
+   --  @param Right Second interval
+   --  @return Smallest interval containing both inputs
+   --  @see IEEE 1788-2015 Section 6.4 "interval hulls"
    function Hull (Left, Right : Interval) return Interval;
+
+   --  Computes interval hull of two numbers
+   --  @param Left First number
+   --  @param Right Second number
+   --  @return Smallest interval containing both inputs
+   --  @see IEEE 1788-2015 Section 6.4 "interval hulls"
    function Hull (Left, Right : T) return Interval;
+
+   --  Computes hull of interval array
+   --  @param Right Array of intervals
+   --  @return Smallest interval containing all inputs
+   --  @see IEEE 1788-2015 Section 6.4 "interval hulls"
    function Hull (Right : IntervalElements) return Interval;
+
+   --  Computes hull of number array
+   --  @param Right Array of numbers
+   --  @return Smallest interval containing all inputs
+   --  @see IEEE 1788-2015 Section 6.4 "interval hulls"
    function Hull (Right : TElements) return Interval;
+
+   --  Tests interval equality
+   --  @param Left First interval
+   --  @param Right Second interval
+   --  @return True if intervals are equal
+   --  @see IEEE 1788-2015 Section 8.1 "set relations"
    function "=" (Left, Right : Interval) return Boolean;
+
+   --  Tests strict containment
+   --  @param Left First interval
+   --  @param Right Second interval
+   --  @return True if Left strictly contains Right
+   --  @see IEEE 1788-2015 Section 8.1 "set relations"
    function "<" (Left, Right : Interval) return Boolean;
+
+   --  Tests non-strict containment
+   --  @param Left First interval
+   --  @param Right Second interval
+   --  @return True if Left contains or equals Right
+   --  @see IEEE 1788-2015 Section 8.1 "set relations"
+   --  @see IEEE 1788.1-2017 Section 10.7.2 "less than or equal"
    function "<=" (Left, Right : Interval) return Boolean;
+
+   --  Tests if interval is strictly greater
+   --  @param Left First interval
+   --  @param Right Second interval
+   --  @return True if Left is entirely greater than Right
+   --  @see IEEE 1788-2015 Section 8.1 "set relations"
+   --  @see IEEE 1788.1-2017 Section 10.7.3 "greater than"
    function ">" (Left, Right : Interval) return Boolean;
+
+   --  Tests if interval is greater or equal
+   --  @param Left First interval
+   --  @param Right Second interval
+   --  @return True if Left is greater than or equal to Right
+   --  @see IEEE 1788-2015 Section 8.1 "set relations"
+   --  @see IEEE 1788.1-2017 Section 10.7.3 "greater than or equal"
    function ">=" (Left, Right : Interval) return Boolean;
+
+   --  Adds two intervals
+   --  @param Left First interval operand
+   --  @param Right Second interval operand
+   --  @return [Left.Lower + Right.Lower, Left.Upper + Right.Upper]
+   --  @see IEEE 1788-2015 Section 8.2 "arithmetic operations"
+   --  @see IEEE 1788.1-2017 Section 10.8.1 "addition"
    function "+" (Left, Right : Interval) return Interval;
+
+   --  Subtracts two intervals
+   --  @param Left First interval operand
+   --  @param Right Second interval operand
+   --  @return [Left.Lower - Right.Upper, Left.Upper - Right.Lower]
+   --  @see IEEE 1788-2015 Section 8.2 "arithmetic operations"
+   --  @see IEEE 1788.1-2017 Section 10.8.2 "subtraction"
    function "-" (Left, Right : Interval) return Interval;
+
+   --  Unary plus operator (identity function)
+   --  @param Right The interval to operate on
+   --  @return The same interval unchanged
+   --  @see IEEE 1788-2015 Section 8.2 "arithmetic operations"
+   --  @see IEEE 1788.1-2017 Section 10.8.1 "unary plus"
    function "+" (Right : Interval) return Interval;
+
+   --  Unary minus operator (negation)
+   --  @param Right The interval to negate
+   --  @return [-Right.Upper, -Right.Lower]
+   --  @see IEEE 1788-2015 Section 8.2 "arithmetic operations"
+   --  @see IEEE 1788.1-2017 Section 10.8.2 "negation"
    function "-" (Right : Interval) return Interval;
+
+   --  Multiplies two intervals
+   --  @param Left First interval operand
+   --  @param Right Second interval operand
+   --  @return Result based on sign combinations of operands
+   --  @see IEEE 1788-2015 Section 8.2 "arithmetic operations"
+   --  @see IEEE 1788.1-2017 Section 10.8.3 "multiplication"
    function "*" (Left, Right : Interval) return Interval;
+
+   --  Divides two intervals
+   --  @param Left First interval operand
+   --  @param Right Second interval operand
+   --  @return Result based on sign combinations of operands
+   --  @raises Invalid_Arguments_To_Division if Right contains zero
+   --  @see IEEE 1788-2015 Section 8.2 "arithmetic operations"
+   --  @see IEEE 1788.1-2017 Section 10.8.4 "division"
    function "/" (Left, Right : Interval) return Interval;
+
+   --  Returns the absolute value of an interval
+   --  @param Right The interval to take the absolute value of
+   --  @return Interval containing absolute values of all points in Right
+   --  @see IEEE 1788-2015 Section 8.3 "absolute value"
+   --  @see IEEE 1788.1-2017 Section 10.9.1 "absolute value"
    function "abs" (Right : Interval) return Interval;
+
+   --  Returns an interval containing all representable values
+   --  Creates an interval spanning the entire range of type T
+   --  @return An interval [T'First,T'Last]
+   --  @see IEEE 1788-2015 Section 6.3 "interval literals"
+   --  @see IEEE 1788.1-2017 Section 10.5.1 "entire"
    function Entire return Interval;
 private
-   --  @summary Internal representation of an interval
+   --  Internal interval representation
+   --  Stores bounds with invariant Lower_Bound <= Upper_Bound
+   --  @field Lower_Bound Lower bound of interval
+   --  @field Upper_Bound Upper bound of interval
    type Interval is record
-      --  @summary Lower bound of the interval
       Lower_Bound : T;
-      --  @summary Upper bound of the interval
       Upper_Bound : T;
    end record
-   with
-     Type_Invariant =>
-       (Lower_Bound <= Upper_Bound and Upper_Bound >= Lower_Bound);
+   with Type_Invariant => Lower_Bound <= Upper_Bound;
 
-   --  @summary Sign of a number (-1, 0, +1)
+   --  Sign indicator for numbers
+   --  -1 for negative, 0 for zero, 1 for positive
    subtype Sign is Integer range -1 .. 1;
 
+   --  Returns sign of a number
+   --  @param Right The number to test
+   --  @return Sign indicator (-1,0,1)
+   --  @see IEEE 1788-2015 Section 8.3
    function Sgn (Right : T) return Sign
    with
      Post =>
@@ -116,6 +244,11 @@ private
        or (Right = T (0) and then Sgn'Result = 0)
        or (Right > T (0) and then Sgn'Result = 1);
 
+   --  Returns minimum of two numbers
+   --  @param Left First number
+   --  @param Right Second number
+   --  @return The smaller value
+   --  @see IEEE 1788-2015 Section 8.3
    function Min (Left, Right : T) return T
    with
      Post =>
@@ -123,10 +256,16 @@ private
        and then Min'Result <= Right
        and then (Min'Result = Left or Min'Result = Right);
 
+   --  Returns maximum of two numbers
+   --  @param Left First number
+   --  @param Right Second number
+   --  @return The larger value
+   --  @see IEEE 1788-2015 Section 8.3
    function Max (Left, Right : T) return T
    with
      Post =>
        Max'Result >= Left
        and then Max'Result >= Right
        and then (Max'Result = Left or Max'Result = Right);
+
 end Ieee1788;

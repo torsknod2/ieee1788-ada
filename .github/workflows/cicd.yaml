@@ -261,7 +261,7 @@ jobs:
             --backend ${{ matrix.backend }} \
             --warnings \
             --html-oop-style \
-            --style gnat \
+            --style leading \
             ieee1788.gpr 2>&1 | tee gnatdoc.log
           GNATDOC_EXIT=${PIPESTATUS[0]}
           if grep -q ": warning: " gnatdoc.log; then
