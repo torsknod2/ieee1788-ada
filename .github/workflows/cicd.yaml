@@ -283,6 +283,7 @@ jobs:
           preview: ${{ startsWith(github.ref, 'refs/tags/') && 'false' || 'true' }}
 
   GNATdocRST2:
+    if: false # FIXME https://github.com/torsknod2/ieee1788-ada/issues/20
     name: GNATdoc rst to ${{ matrix.format }}
     strategy:
       matrix:

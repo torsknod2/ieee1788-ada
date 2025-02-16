@@ -133,7 +133,7 @@ package body Ieee1788 is
       return Temp;
    end Hull;
 
-   --  Creates the smallest interval containing the union of all input intervals
+   --  Creates smallest interval containing the union of all input intervals
    --  @param Right Array of intervals to combine into single interval
    --  @return Smallest interval containing all input intervals
    function Hull (Right : IntervalElements) return Interval is
@@ -176,7 +176,7 @@ package body Ieee1788 is
    --  Tests if one interval is less than or equal to another
    --  @param Left First interval to compare
    --  @param Right Second interval to compare
-   --  @return True if Left's upper bound is less than or equal to Right's lower bound
+   --  @return True if Left's upper bound <= Right's lower bound
    --  @see IEEE 1788-2015 Section 7.2 "set relations"
    --  @see IEEE 1788.1-2017 Section 10.7.2 "less than or equal"
    function "<=" (Left, Right : Interval) return Boolean is
@@ -198,7 +198,7 @@ package body Ieee1788 is
    --  Tests if one interval is greater than or equal to another
    --  @param Left First interval to compare
    --  @param Right Second interval to compare
-   --  @return True if Left's lower bound is greater than or equal to Right's upper bound
+   --  @return True if Left's lower bound >= Right's upper bound
    --  @see IEEE 1788-2015 Section 7.2 "set relations"
    --  @see IEEE 1788.1-2017 Section 10.7.3 "greater than or equal"
    function ">=" (Left, Right : Interval) return Boolean is
@@ -360,7 +360,7 @@ package body Ieee1788 is
    --  @param Left First interval operand
    --  @param Right Second interval operand
    --  @return Result based on sign combinations of operands
-   --  @raises Invalid_Arguments_To_Division if Right contains zero
+   --  @exception Invalid_Arguments_To_Division if Right contains zero
    --  @see IEEE 1788-2015 Section 8.2 "arithmetic operations"
    --  @see IEEE 1788.1-2017 Section 10.8.4 "division"
    function "/" (Left, Right : Interval) return Interval is

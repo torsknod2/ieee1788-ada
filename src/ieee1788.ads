@@ -49,11 +49,11 @@ generic
    --  The underlying numeric type for interval bounds
    --  Must be a fixed or numeric type supporting exact arithmetic
    --  @see IEEE 1788-2015 Section 7.2 "computational data types"
-   type T is delta <> ;
+   type T is delta <>;
 package Ieee1788 is
    pragma Pure;
 
-   --  Exception raised when division by an interval containing zero is attempted
+   --  Exception for division by interval containing zero
    --  Raised by "/" operator when Right operand contains zero
    --  @see IEEE 1788-2015 Section 8.2 "arithmetic operations"
    Invalid_Arguments_To_Division : exception;
@@ -200,7 +200,7 @@ package Ieee1788 is
    --  @param Left First interval operand
    --  @param Right Second interval operand
    --  @return Result based on sign combinations of operands
-   --  @raises Invalid_Arguments_To_Division if Right contains zero
+   --  @exception Invalid_Arguments_To_Division if Right contains zero
    --  @see IEEE 1788-2015 Section 8.2 "arithmetic operations"
    --  @see IEEE 1788.1-2017 Section 10.8.4 "division"
    function "/" (Left, Right : Interval) return Interval;
