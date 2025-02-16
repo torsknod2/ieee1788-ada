@@ -168,25 +168,31 @@ jobs:
           path: aunit_results.xml
 
       - name: Alire GNATcov Report ASM
-        run: alr --chdir=$GITHUB_WORKSPACE/tests --non-interactive --force gnatcov coverage --annotate=asm --output-dir $GITHUB_WORKSPACE/gnatcov_out --level=stmt+mcdc --projects ieee1788.gpr $GITHUB_WORKSPACE/*.srctrace
+        run: alr --chdir=$GITHUB_WORKSPACE/tests --non-interactive --force gnatcov coverage --annotate=asm --output-dir $GITHUB_WORKSPACE/gnatcov_out --level=stmt+mcdc --projects ieee1788.gpr $GITHUB_WORKSPACE/tests/*.srctrace
 
       - name: Alire GNATcov Report XCOV+
-        run: alr --chdir=$GITHUB_WORKSPACE/tests --non-interactive --force gnatcov coverage --annotate=xcov+ --output-dir $GITHUB_WORKSPACE/gnatcov_out --level=stmt+mcdc --projects ieee1788.gpr $GITHUB_WORKSPACE/*.srctrace
+        run: alr --chdir=$GITHUB_WORKSPACE/tests --non-interactive --force gnatcov coverage --annotate=xcov+ --output-dir $GITHUB_WORKSPACE/gnatcov_out --level=stmt+mcdc --projects ieee1788.gpr $GITHUB_WORKSPACE/tests/*.srctrace
 
       - name: Alire GNATcov Report HTML
-        run: alr --chdir=$GITHUB_WORKSPACE/tests --non-interactive --force gnatcov coverage --annotate=html+ --output-dir $GITHUB_WORKSPACE/gnatcov_out --level=stmt+mcdc --projects ieee1788.gpr $GITHUB_WORKSPACE/*.srctrace
+        run: alr --chdir=$GITHUB_WORKSPACE/tests --non-interactive --force gnatcov coverage --annotate=html+ --output-dir $GITHUB_WORKSPACE/gnatcov_out --level=stmt+mcdc --projects ieee1788.gpr $GITHUB_WORKSPACE/tests/*.srctrace
 
       - name: Alire GNATcov Report DHTML
-        run: alr --chdir=$GITHUB_WORKSPACE/tests --non-interactive --force gnatcov coverage --annotate=dhtml --output-dir $GITHUB_WORKSPACE/gnatcov_out --level=stmt+mcdc --projects ieee1788.gpr $GITHUB_WORKSPACE/*.srctrace
+        run: alr --chdir=$GITHUB_WORKSPACE/tests --non-interactive --force gnatcov coverage --annotate=dhtml --output-dir $GITHUB_WORKSPACE/gnatcov_out --level=stmt+mcdc --projects ieee1788.gpr $GITHUB_WORKSPACE/tests/*.srctrace
 
       - name: Alire GNATcov Report Sarif
-        run: alr --chdir=$GITHUB_WORKSPACE/tests --non-interactive --force gnatcov coverage --annotate=report --output-dir $GITHUB_WORKSPACE/gnatcov_out --level=stmt+mcdc --projects ieee1788.gpr $GITHUB_WORKSPACE/*.srctrace
+        run: alr --chdir=$GITHUB_WORKSPACE/tests --non-interactive --force gnatcov coverage --annotate=report --output-dir $GITHUB_WORKSPACE/gnatcov_out --level=stmt+mcdc --projects ieee1788.gpr $GITHUB_WORKSPACE/tests/*.srctrace
 
       - name: Publish GNATcov Output
         uses: actions/upload-artifact@65c4c4a1ddee5b72f698fdd19549f0f0fb45cf08
         with:
           name: gnatcov_out
           path: gnatcov_out
+
+      - uses: alire-project/gnatcov-to-codecovio-action@54d55a0259f7b7a272cb25232f0d29a57ee2b699
+        if: github.ref == 'refs/heads/main'
+        with:
+          fail_ci_if_error: true
+          verbose: true
 
   Publish:
     needs: [GNATprove, Test, pre-commit]
