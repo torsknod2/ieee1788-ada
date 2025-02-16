@@ -1,5 +1,6 @@
 {
     "recommendations": [
+        "codecov.codecov",
         "adacore.ada",
         "entomy.ada-snippets",
         "melodicdevelopment.azure-work-management",
