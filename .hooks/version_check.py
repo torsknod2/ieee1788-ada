@@ -54,20 +54,44 @@ parser.add_argument(
 args = parser.parse_args()
 
 
-git_version: str = (
-    subprocess.check_output(["git", "describe", "--tags", "--always"], shell=False)
+version: semver.Version
+count: int
+try:
+    version = semver.Version.parse(
+        (
+            subprocess.check_output(
+                ["git", "describe", "--tags", "--abbrev=0"], shell=False
+            )
+            .decode()
+            .strip()
+        )
+    )
+    count = int(
+        subprocess.check_output(
+            ["git", "rev-list", f"{tag}..HEAD", "--count"], shell=False
+        )
+        .decode()
+        .strip()
+    )
+except (subprocess.CalledProcessError, ValueError, TypeError):
+    version = semver.Version.parse("0.0.1")
+    count = int(
+        subprocess.check_output(["git", "rev-list", "HEAD", "--count"], shell=False)
+        .decode()
+        .strip()
+    )
+
+clean: bool = (
+    subprocess.check_output(["git", "status", "--porcelain"], shell=False)
     .decode()
     .strip()
+    == ""
 )
 
-version: str | None
-try:
-    version = str(semver.Version.parse(git_version))
-except (ValueError, TypeError):
-    try:
-        version = str(semver.Version.parse("0.0.1-dev+" + git_version))
-    except (ValueError, TypeError):
-        version = None
+build: int = count + (0 if clean else 1)
+
+if build > 0:
+    version = version.replace(prerelease="dev", build=build)
 
 success: bool = True
 for toml_file in args.files:
@@ -75,8 +99,8 @@ for toml_file in args.files:
         data: tomlkit.TOMLDocument = tomlkit.load(f)
 
     if "version" in data:
-        if data["version"] != version:
-            data["version"] = version
+        if data["version"] != str(version):
+            data["version"] = str(version)
             with open(toml_file, mode="w", encoding="US-ASCII") as f:
                 tomlkit.dump(data, f)
             success = False
