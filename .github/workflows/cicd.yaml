@@ -117,6 +117,9 @@ jobs:
 
   Test:
     runs-on: ubuntu-24.04
+    strategy:
+      matrix:
+        level: ["branch", "stmt+mcdc"]
     steps:
       - name: Harden Runner
         uses: step-security/harden-runner@cb605e52c26070c328afc4562f0b4ada7618a84e # v2.10.4
@@ -152,8 +155,8 @@ jobs:
       - name: Alire Generate Configuration
         run: alr --chdir=$GITHUB_WORKSPACE/tests --non-interactive --force build --validation --stop-after=generation
 
-      - name: Alire GNATcov Instrument
-        run: alr --chdir=$GITHUB_WORKSPACE/tests --non-interactive --force gnatcov instrument --level=stmt+mcdc --dump-trigger=atexit --projects=$GITHUB_WORKSPACE/ieee1788.gpr
+      - name: Alire GNATcov ${{ matrix.level }} Instrument
+        run: alr --chdir=$GITHUB_WORKSPACE/tests --non-interactive --force gnatcov instrument --level=${{ matrix.level }} --dump-trigger=atexit --projects=$GITHUB_WORKSPACE/ieee1788.gpr
 
       - name: Alire Build Instrumented Test Code
         env:
@@ -166,13 +169,13 @@ jobs:
       - name: Publish AUnit Results
         uses: actions/upload-artifact@65c4c4a1ddee5b72f698fdd19549f0f0fb45cf08
         with:
-          name: aunit_results.xml
+          name: aunit_results_${{ matrix.level }}.xml
           path: aunit_results.xml
 
       - name: Publish All
         uses: actions/upload-artifact@65c4c4a1ddee5b72f698fdd19549f0f0fb45cf08
         with:
-          name: Test_Result
+          name: Test_Result_${{ matrix.level }}
           path: .
 
   UploadCodeCoverage:
@@ -180,10 +183,13 @@ jobs:
     runs-on: ubuntu-24.04
     strategy:
       matrix:
-        # TODO Add asm later, when we also have object coverage
         # TODO "GNATquilt" is missing for dhtml, whatever this is.
         # Wait for SARIF support
-        annotate: ["xcov+", "html+", "report"]
+        level: ["branch", "stmt+mcdc"]
+        annotate: ["asm", "xcov+", "html+", "report"]
+        exclude:
+          - level: "stmt+mcdc"
+            annotate: "asm"
     steps:
       - name: Harden Runner
         uses: step-security/harden-runner@cb605e52c26070c328afc4562f0b4ada7618a84e # v2.10.4
@@ -197,7 +203,7 @@ jobs:
       - name: Download Test Artifact
         uses: actions/download-artifact@fa0a91b85d4f404e444e00e005971372dc801d16
         with:
-          name: Test_Result
+          name: Test_Result_${{ matrix.level }}
 
       - name: Setup Alire
         uses: alire-project/setup-alire@678ded26f00993ff4ae2ab42248c44e887c1f2e7 # v4
@@ -207,16 +213,16 @@ jobs:
         with:
           crates: gnatcov
 
-      - name: Alire GNATcov Report in ${{ matrix.annotate }}
+      - name: Alire GNATcov ${{ matrix.level }} Report in ${{ matrix.annotate }}
         run: |
           cd $GITHUB_WORKSPACE/tests
-          eval $(alr printenv)
-          find . -name "*.srctrace" -print0 | xargs -0 ../alire_prefix/bin/gnatcov coverage -Pieee1788_tests.gpr --annotate=${{ matrix.annotate }} --output-dir $GITHUB_WORKSPACE/gnatcov_out --level=stmt+mcdc --projects ieee1788.gpr
+          eval $(../alire_install/bin/alr printenv)
+          find . -name "*.srctrace" -print0 | xargs -0 ../alire_prefix/bin/gnatcov coverage -Pieee1788_tests.gpr --annotate=${{ matrix.annotate }} --output-dir $GITHUB_WORKSPACE/gnatcov_out --level=${{ matrix.level }} --projects ieee1788.gpr
       #          find . -name "*.srctrace" -print0 | xargs -0 alr --chdir=$GITHUB_WORKSPACE/tests --non-interactive --force gnatcov coverage --annotate=${{ matrix.annotate }} --output-dir $GITHUB_WORKSPACE/gnatcov_out --level=stmt+mcdc --projects ieee1788.gpr
       - name: Publish Coverage Output
         uses: actions/upload-artifact@65c4c4a1ddee5b72f698fdd19549f0f0fb45cf08
         with:
-          name: gnatcov_${{ matrix.annotate }}
+          name: gnatcov_${{ matrix.level }}_${{ matrix.annotate }}
           path: .
 
   PublishCodeCoverage:
