@@ -257,12 +257,17 @@ jobs:
       - name: Generate ${{ matrix.backend }} Documentation
         run: |
           gnatdoc --output-dir=doc/${{ matrix.backend }} \
-                  --generate body \
-                  --backend ${{ matrix.backend }} \
-                  --warnings \
-                  --html-oop-style \
-                  --style gnat \
-                  ieee1788.gpr
+            --generate body \
+            --backend ${{ matrix.backend }} \
+            --warnings \
+            --html-oop-style \
+            --style gnat \
+            ieee1788.gpr 2>&1 | tee gnatdoc.log
+          GNATDOC_EXIT=${PIPESTATUS[0]}
+          if grep -q ": warning: " gnatdoc.log; then
+            sed -n 's/\(.*\): warning: \(.*\)/::warning::\1: \2/p' gnatdoc.log
+          fi
+          exit $GNATDOC_EXIT
 
       - name: Upload Documentation Artifact
         uses: actions/upload-pages-artifact@56afc609e74202658d3ffba0e8f6dda462b719fa
