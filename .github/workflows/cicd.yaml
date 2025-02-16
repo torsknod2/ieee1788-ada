@@ -205,11 +205,21 @@ jobs:
             github.com:443
             objects.githubusercontent.com:443
             uploader.codecov.io:443
+            pypi.org:443
+            files.pythonhosted.org:443
 
       - name: Download Coverage Artifact
         uses: actions/download-artifact@fa0a91b85d4f404e444e00e005971372dc801d16
         with:
           name: gnatcov_out
+
+      - name: Setup Python
+        uses: actions/setup-python@42375524e23c412d93fb67b49958b491fce71c38
+        with:
+          cache: pip
+
+      - name: Install coveragepy
+        run: pip install coveragepy
 
       - uses: alire-project/gnatcov-to-codecovio-action@54d55a0259f7b7a272cb25232f0d29a57ee2b699
         with:
