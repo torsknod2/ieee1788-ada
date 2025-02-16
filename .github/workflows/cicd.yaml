@@ -252,7 +252,7 @@ jobs:
         run: alr --chdir=$GITHUB_WORKSPACE/tests --non-interactive --force build --stop-after=generation
 
       - name: Fix GNATdoc installation
-        run: ln -sv $GITHUB_WORKSPACE/alire_prefix/share/gnatdoc $GITHUB_WORKSPACE/alire_prefix || true
+        run: ln -sv $GITHUB_WORKSPACE/alire_prefix/share/share/gnatdoc $GITHUB_WORKSPACE/alire_prefix/share || true
 
       - name: Generate ${{ matrix.backend }} Documentation
         run: |
