@@ -177,8 +177,9 @@ jobs:
       - name: Alire GNATcov Report HTML
         run: alr --chdir=$GITHUB_WORKSPACE/tests --non-interactive --force gnatcov coverage --annotate=html+ --output-dir $GITHUB_WORKSPACE/gnatcov_out --level=stmt+mcdc --projects ieee1788.gpr $GITHUB_WORKSPACE/tests/*.srctrace
 
-      - name: Alire GNATcov Report DHTML
-        run: alr --chdir=$GITHUB_WORKSPACE/tests --non-interactive --force gnatcov coverage --annotate=dhtml --output-dir $GITHUB_WORKSPACE/gnatcov_out --level=stmt+mcdc --projects ieee1788.gpr $GITHUB_WORKSPACE/tests/*.srctrace
+      # TODO "GNATquilt" is missing, whatever this is.
+      # - name: Alire GNATcov Report DHTML
+      #   run: alr --chdir=$GITHUB_WORKSPACE/tests --non-interactive --force gnatcov coverage --annotate=dhtml --output-dir $GITHUB_WORKSPACE/gnatcov_out --level=stmt+mcdc --projects ieee1788.gpr $GITHUB_WORKSPACE/tests/*.srctrace
 
       - name: Alire GNATcov Report Sarif
         run: alr --chdir=$GITHUB_WORKSPACE/tests --non-interactive --force gnatcov coverage --annotate=report --output-dir $GITHUB_WORKSPACE/gnatcov_out --level=stmt+mcdc --projects ieee1788.gpr $GITHUB_WORKSPACE/tests/*.srctrace
