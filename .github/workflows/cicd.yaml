@@ -167,8 +167,9 @@ jobs:
           name: aunit_results.xml
           path: aunit_results.xml
 
-      - name: Alire GNATcov Report ASM
-        run: alr --chdir=$GITHUB_WORKSPACE/tests --non-interactive --force gnatcov coverage --annotate=asm --output-dir $GITHUB_WORKSPACE/gnatcov_out --level=stmt+mcdc --projects ieee1788.gpr $GITHUB_WORKSPACE/tests/*.srctrace
+      # TODO Add this later, when we also have object coverage
+      # - name: Alire GNATcov Report ASM
+      #   run: alr --chdir=$GITHUB_WORKSPACE/tests --non-interactive --force gnatcov coverage --annotate=asm --output-dir $GITHUB_WORKSPACE/gnatcov_out --level=stmt+mcdc --projects ieee1788.gpr $GITHUB_WORKSPACE/tests/*.srctrace
 
       - name: Alire GNATcov Report XCOV+
         run: alr --chdir=$GITHUB_WORKSPACE/tests --non-interactive --force gnatcov coverage --annotate=xcov+ --output-dir $GITHUB_WORKSPACE/gnatcov_out --level=stmt+mcdc --projects ieee1788.gpr $GITHUB_WORKSPACE/tests/*.srctrace
