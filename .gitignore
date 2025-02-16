@@ -32,14 +32,11 @@
 # which apply to the Application, with which you must still comply.
 
 *.ali
-/alire/
-/alire/tests/
-/config/
-/lib/
-*.o
-/obj/
-/tests/alire/
-/tests/config/
-/tests/lib/
-/tests/obj/
+alire/
+bin/
+config/
 IEEE Std 1788*.pdf
+lib/
+*.o
+obj/
+*.srctrace
