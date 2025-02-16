@@ -169,6 +169,12 @@ jobs:
           name: aunit_results.xml
           path: aunit_results.xml
 
+      - name: Publish All
+        uses: actions/upload-artifact@65c4c4a1ddee5b72f698fdd19549f0f0fb45cf08
+        with:
+          name: Test_Result
+          path: .
+
   UploadCodeCoverage:
     needs: [Test]
     runs-on: ubuntu-24.04
@@ -191,7 +197,7 @@ jobs:
       - name: Download Coverage Artifact
         uses: actions/download-artifact@fa0a91b85d4f404e444e00e005971372dc801d16
         with:
-          name: gnatcov_out
+          name: Test_Result
 
       - name: Setup Alire
         uses: alire-project/setup-alire@678ded26f00993ff4ae2ab42248c44e887c1f2e7 # v4
@@ -211,7 +217,7 @@ jobs:
           path: .
 
   PublishCodeCoverage:
-    needs: [UploadCodeCoverage]
+    needs: [UploadCodeCoverage] # TODO Unnecessarily waiting for all matrix variants due to https://github.com/orgs/community/discussions/42335
     runs-on: ubuntu-24.04
     steps:
       - name: Harden Runner
