@@ -141,7 +141,7 @@ package body Ieee1788 is
    begin
       for Index in Right'Range loop
          if Index > 0 then
-            Temp := Hull (Temp, Right (Index));
+            Temp := Hull (Temp, Right (Index)));
          else
             null;
          end if;
@@ -340,12 +340,12 @@ package body Ieee1788 is
       Table :
         constant array (Sign, Sign)
         of access function (Left, Right : Interval) return Interval :=
-          ((MulNN'Access, MulNM'Access, MulNP'Access),
-           (MulMN'Access, MulMM'Access, MulMP'Access),
-           (MulPN'Access, MulPM'Access, MulPP'Access));
+          [[MulNN'Access, MulNM'Access, MulNP'Access],
+           [MulMN'Access, MulMM'Access, MulMP'Access],
+           [MulPN'Access, MulPM'Access, MulPP'Access]];
       Signs : constant array (1 .. 2, 1 .. 2) of Sign :=
-        ((Sign (Left.Lower_Bound), Sign (Left.Upper_Bound)),
-         (Sign (Right.Lower_Bound), Sign (Right.Upper_Bound)));
+        [[Sign (Left.Lower_Bound), Sign (Left.Upper_Bound)],
+         [Sign (Right.Lower_Bound), Sign (Right.Upper_Bound)]];
    begin
       return
         Table
@@ -436,12 +436,12 @@ package body Ieee1788 is
       Table :
         constant array (Sign, Sign)
         of access function (Left, Right : Interval) return Interval :=
-          ((DivNN'Access, DivNM'Access, DivNP'Access),
-           (DivMN'Access, DivMM'Access, DivMP'Access),
-           (DivPN'Access, DivPM'Access, DivPP'Access));
+          [[DivNN'Access, DivNM'Access, DivNP'Access],
+           [DivMN'Access, DivMM'Access, DivMP'Access],
+           [DivPN'Access, DivPM'Access, DivPP'Access]];
       Signs : constant array (1 .. 2, 1 .. 2) of Sign :=
-        ((Sign (Left.Lower_Bound), Sign (Left.Upper_Bound)),
-         (Sign (Right.Lower_Bound), Sign (Right.Upper_Bound)));
+        [[Sign (Left.Lower_Bound), Sign (Left.Upper_Bound)],
+         [Sign (Right.Lower_Bound), Sign (Right.Upper_Bound)]];
    begin
       --- FIXME https://www.math.kit.edu/ianm2/~kulisch/media/compl1788.pdf p.8
       return
