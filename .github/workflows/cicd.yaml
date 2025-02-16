@@ -179,6 +179,28 @@ jobs:
         # Wait for SARIF support
         annotate: ["xcov+", "html+", "report"]
     steps:
+      - name: Harden Runner
+        uses: step-security/harden-runner@cb605e52c26070c328afc4562f0b4ada7618a84e # v2.10.4
+        with:
+          disable-sudo: true
+          egress-policy: block
+          allowed-endpoints: >
+            github.com:443
+            objects.githubusercontent.com:443
+
+      - name: Download Coverage Artifact
+        uses: actions/download-artifact@fa0a91b85d4f404e444e00e005971372dc801d16
+        with:
+          name: gnatcov_out
+
+      - name: Setup Alire
+        uses: alire-project/setup-alire@678ded26f00993ff4ae2ab42248c44e887c1f2e7 # v4
+
+      - name: Install FSF toolchain
+        uses: alire-project/alr-install@b9d8855d9aba7d57fa27e70c1e6f8218f8c127c0
+        with:
+          crates: gnatcov
+
       - name: Alire GNATcov Report in ${{ matrix.annotate }}
         run: alr --chdir=$GITHUB_WORKSPACE/tests --non-interactive --force gnatcov coverage --annotate=${{ matrix.annotate }} --output-dir $GITHUB_WORKSPACE/gnatcov_out --level=stmt+mcdc --projects ieee1788.gpr $GITHUB_WORKSPACE/tests/*.srctrace
 
