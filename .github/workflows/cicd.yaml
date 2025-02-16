@@ -170,11 +170,19 @@ jobs:
           path: aunit_results.xml
 
       - name: Publish All
+        run: |
+          # Create a list of files to exclude (tracked by git)
+          git ls-files > exclude_list.txt
+
+      - name: Upload Test Results
         uses: actions/upload-artifact@65c4c4a1ddee5b72f698fdd19549f0f0fb45cf08
         with:
           name: Test_Result
-          path: .
-          include-hidden-files: true
+          path: |
+            !{$(cat exclude_list.txt)}
+            !exclude_list.txt
+            !alire_install
+            !alire_prefix
 
   UploadCodeCoverage:
     needs: [Test]
@@ -203,17 +211,13 @@ jobs:
         with:
           name: Test_Result
 
-      # - name: Setup Alire
-      #   uses: alire-project/setup-alire@678ded26f00993ff4ae2ab42248c44e887c1f2e7 # v4
+      - name: Setup Alire
+        uses: alire-project/setup-alire@678ded26f00993ff4ae2ab42248c44e887c1f2e7 # v4
 
-      # - name: Install FSF toolchain
-      #   uses: alire-project/alr-install@b9d8855d9aba7d57fa27e70c1e6f8218f8c127c0
-      #   with:
-      #     crates: gnatcov
-
-      - name: Make bin files executable
-        run: |
-          find $GITHUB_WORKSPACE -type d -name bin -exec sh -c 'find "{}" -type f -print0 | xargs -0 chmod -v +x \;' \;
+      - name: Install FSF toolchain
+        uses: alire-project/alr-install@b9d8855d9aba7d57fa27e70c1e6f8218f8c127c0
+        with:
+          crates: gnatcov
 
       - name: Alire GNATcov ${{ matrix.level }} Report in ${{ matrix.annotate }}
         run: |
