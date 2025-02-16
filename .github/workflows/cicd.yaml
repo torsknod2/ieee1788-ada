@@ -253,6 +253,7 @@ jobs:
         run: alr --chdir=$GITHUB_WORKSPACE/tests --non-interactive --force build --stop-after=generation
 
       - name: Fix GNATdoc installation
+        # TODO Open workaround for https://github.com/AdaCore/gnatdoc/issues/30
         run: ln -sv $GITHUB_WORKSPACE/alire_prefix/share/share/gnatdoc $GITHUB_WORKSPACE/alire_prefix/share || true
 
       - name: Generate ${{ matrix.backend }} Documentation
