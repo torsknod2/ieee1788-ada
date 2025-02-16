@@ -136,6 +136,17 @@ jobs:
         with:
           crates: gnat_native gprbuild gnatcov
 
+      - name: Build and install gnatcov_rts_full
+        run: |
+          export GNATCOV_RTS_BUILD_PATH="${{ runner.temp }}/gnatcov_rts-build"
+          export GNATCOV_RTS_INSTALL_PATH="${{ runner.temp }}/gnatcov_rts-install"
+          mkdir -p "${GNATCOV_RTS_BUILD_PATH}"
+          cd "${GNATCOV_RTS_BUILD_PATH}"
+          gprbuild -p -P$GITHUB_WORKSPACE/alire_prefix/share/gnatcoverage/gnatcov_rts/gnatcov_rts_full.gpr
+          gprinstall -p -P$GITHUB_WORKSPACE/alire_prefix/share/gnatcoverage/gnatcov_rts/gnatcov_rts_full.gpr --prefix="${GNATCOV_RTS_INSTALL_PATH}"
+          find "${GNATCOV_RTS_INSTALL_PATH}"
+          echo "GPR_PROJECT_PATH=${GNATCOV_RTS_INSTALL_PATH}/share/gpr:${GPR_PROJECT_PATH}" >> $GITHUB_ENV
+
       - name: Alire Generate Configuration
         run: alr --chdir=$GITHUB_WORKSPACE/tests --non-interactive --force build --validation --stop-after=generation
 
@@ -143,12 +154,12 @@ jobs:
         run: alr --chdir=$GITHUB_WORKSPACE/tests --non-interactive --force gnatcov instrument --level=stmt+mcdc --dump-trigger=atexit --projects=$GITHUB_WORKSPACE/ieee1788.gpr
 
       - name: Alire Build Instrumented Test Code
+        env:
+          GPR_PROJECT_PATH: ${{ env.GPR_PROJECT_PATH }}
         run: alr --chdir=$GITHUB_WORKSPACE/tests --non-interactive --force build --validation -- --src-subdirs=gnatcov-instr --implicit-with=gnatcov_rts_full
 
       - name: Alire Run Instrumented Tests
         run: alr --chdir=$GITHUB_WORKSPACE/tests --non-interactive --force run --skip-build --args "$GITHUB_WORKSPACE/aunit_results.xml"
-        env:
-          GNATCOV_TRACE_FILE: $GITHUB_WORKSPACE/
 
       - name: Publish AUnit Results
         uses: actions/upload-artifact@65c4c4a1ddee5b72f698fdd19549f0f0fb45cf08
@@ -156,23 +167,34 @@ jobs:
           name: aunit_results.xml
           path: aunit_results.xml
 
-      - name: Alire GNATcov Report XCOV+
-        run: alr --chdir=$GITHUB_WORKSPACE/tests --non-interactive --force gnatcov coverage --annotate=xcov+ --output-dir $GITHUB_WORKSPACE/gnatcov_out --level=stmt+mcdc --projects ieee1788.gpr $GITHUB_WORKSPACE/*.srctrace
+      # TODO Add this later, when we also have object coverage
+      # - name: Alire GNATcov Report ASM
+      #   run: alr --chdir=$GITHUB_WORKSPACE/tests --non-interactive --force gnatcov coverage --annotate=asm --output-dir $GITHUB_WORKSPACE/gnatcov_out --level=stmt+mcdc --projects ieee1788.gpr $GITHUB_WORKSPACE/tests/*.srctrace
 
-      - name: Alire GNATcov Report DHTML
-        run: alr --chdir=$GITHUB_WORKSPACE/tests --non-interactive --force gnatcov coverage --annotate=dhtml --output-dir $GITHUB_WORKSPACE/gnatcov_out --level=stmt+mcdc --projects ieee1788.gpr $GITHUB_WORKSPACE/*.srctrace
+      - name: Alire GNATcov Report XCOV+
+        run: alr --chdir=$GITHUB_WORKSPACE/tests --non-interactive --force gnatcov coverage --annotate=xcov+ --output-dir $GITHUB_WORKSPACE/gnatcov_out --level=stmt+mcdc --projects ieee1788.gpr $GITHUB_WORKSPACE/tests/*.srctrace
 
       - name: Alire GNATcov Report HTML
-        run: alr --chdir=$GITHUB_WORKSPACE/tests --non-interactive --force gnatcov coverage --annotate=html+ --output-dir $GITHUB_WORKSPACE/gnatcov_out --level=stmt+mcdc --projects ieee1788.gpr $GITHUB_WORKSPACE/*.srctrace
+        run: alr --chdir=$GITHUB_WORKSPACE/tests --non-interactive --force gnatcov coverage --annotate=html+ --output-dir $GITHUB_WORKSPACE/gnatcov_out --level=stmt+mcdc --projects ieee1788.gpr $GITHUB_WORKSPACE/tests/*.srctrace
+
+      # TODO "GNATquilt" is missing, whatever this is.
+      # - name: Alire GNATcov Report DHTML
+      #   run: alr --chdir=$GITHUB_WORKSPACE/tests --non-interactive --force gnatcov coverage --annotate=dhtml --output-dir $GITHUB_WORKSPACE/gnatcov_out --level=stmt+mcdc --projects ieee1788.gpr $GITHUB_WORKSPACE/tests/*.srctrace
 
       - name: Alire GNATcov Report Sarif
-        run: alr --chdir=$GITHUB_WORKSPACE/tests --non-interactive --force gnatcov coverage --annotate=sarif --output-dir $GITHUB_WORKSPACE/gnatcov_out --level=stmt+mcdc --projects ieee1788.gpr $GITHUB_WORKSPACE/*.srctrace
+        run: alr --chdir=$GITHUB_WORKSPACE/tests --non-interactive --force gnatcov coverage --annotate=report --output-dir $GITHUB_WORKSPACE/gnatcov_out --level=stmt+mcdc --projects ieee1788.gpr $GITHUB_WORKSPACE/tests/*.srctrace
 
       - name: Publish GNATcov Output
         uses: actions/upload-artifact@65c4c4a1ddee5b72f698fdd19549f0f0fb45cf08
         with:
           name: gnatcov_out
           path: gnatcov_out
+
+      - uses: alire-project/gnatcov-to-codecovio-action@54d55a0259f7b7a272cb25232f0d29a57ee2b699
+        if: github.ref == 'refs/heads/main'
+        with:
+          fail_ci_if_error: true
+          verbose: true
 
   Publish:
     needs: [GNATprove, Test, pre-commit]
@@ -206,3 +228,133 @@ jobs:
         with:
           name: alire-archive
           path: alire/archive/
+
+  GNATdoc:
+    needs: pre-commit
+    runs-on: ubuntu-24.04
+    strategy:
+      matrix:
+        backend: [html, rst]
+    steps:
+      - name: Harden Runner
+        uses: step-security/harden-runner@cb605e52c26070c328afc4562f0b4ada7618a84e # v2.10.4
+        with:
+          disable-sudo: true
+          egress-policy: block
+          allowed-endpoints: >
+            github.com:443
+            objects.githubusercontent.com:443
+            pypi.org:443
+
+      - name: Checkout code
+        uses: actions/checkout@11bd71901bbe5b1630ceea73d27597364c9af683
+
+      - name: Setup Alire
+        uses: alire-project/setup-alire@678ded26f00993ff4ae2ab42248c44e887c1f2e7 # v4
+
+      - name: Install FSF toolchain with GNATdoc
+        uses: alire-project/alr-install@b9d8855d9aba7d57fa27e70c1e6f8218f8c127c0
+        with:
+          crates: gnat_native gprbuild gnatdoc
+
+      - name: Alire Generate Configuration
+        run: alr --chdir=$GITHUB_WORKSPACE/tests --non-interactive --force build --stop-after=generation
+
+      - name: Fix GNATdoc installation
+        # TODO Open workaround for https://github.com/AdaCore/gnatdoc/issues/30
+        run: ln -sv $GITHUB_WORKSPACE/alire_prefix/share/share/gnatdoc $GITHUB_WORKSPACE/alire_prefix/share || true
+
+      - name: Generate ${{ matrix.backend }} Documentation
+        run: |
+          gnatdoc --output-dir=doc/${{ matrix.backend }} \
+            --generate body \
+            --backend ${{ matrix.backend }} \
+            --warnings \
+            --html-oop-style \
+            --style leading \
+            ieee1788.gpr 2>&1 | tee gnatdoc.log
+          GNATDOC_EXIT=${PIPESTATUS[0]}
+          if grep -q ": warning: " gnatdoc.log; then
+            sed -n 's/\(.*\): warning: \(.*\)/::warning::\1: \2/p' gnatdoc.log
+          fi
+          exit $GNATDOC_EXIT
+
+      - name: Upload Documentation Artifact
+        uses: actions/upload-pages-artifact@56afc609e74202658d3ffba0e8f6dda462b719fa
+        with:
+          name: GNATdoc-${{ matrix.backend }}
+          path: doc/${{ matrix.backend }}
+
+      - name: Deploy to GitHub Pages
+        if: matrix.backend == 'html' && (github.ref == 'refs/heads/main' || (startsWith(github.ref, 'refs/tags/') && github.event.base_ref == 'refs/heads/main'))
+        uses: actions/deploy-pages@d6db90164ac5ed86f2b6aed7e0febac5b3c0c03e
+        with:
+          artifact_name: GNATdoc-html
+          preview: ${{ startsWith(github.ref, 'refs/tags/') && 'false' || 'true' }}
+
+  GNATdocRST2:
+    if: false # FIXME https://github.com/torsknod2/ieee1788-ada/issues/20
+    name: GNATdoc rst to ${{ matrix.format }}
+    strategy:
+      matrix:
+        include:
+          - format: html
+            params: --generator --time --source-link --verbose --strict --traceback --output-encoding=us-ascii:strict --pep-references --rfc-references --smart-quotes=yes --math-output=MathJax
+          - format: html4
+            params: --generator --time --source-link --verbose --strict --traceback --output-encoding=us-ascii:strict --pep-references --rfc-references --smart-quotes=yes --math-output=MathJax
+          - format: html5
+            params: --generator --time --source-link --verbose --strict --traceback --output-encoding=us-ascii:strict --pep-references --rfc-references --smart-quotes=yes --math-output=MathJax --section-self-link
+          - format: latex
+            params: --generator --time --source-link --verbose --strict --traceback --output-encoding=us-ascii:strict --pep-references --rfc-references --smart-quotes=yes --embed-stylesheet --use-part-section --use-latex-docinfo --use-latex-abstract
+          - format: man
+            params: --generator --time --source-link --verbose --strict --traceback --output-encoding=us-ascii:strict --pep-references --rfc-references --smart-quotes=yes
+          - format: odt
+            params: --generator --time --source-link --verbose --strict --traceback --output-encoding=us-ascii:strict --pep-references --rfc-references --smart-quotes=yes --add-syntax-highlighting --create-links
+          - format: s5
+            params: --generator --time --source-link --verbose --strict --traceback --output-encoding=us-ascii:strict --pep-references --rfc-references --smart-quotes=yes --visible-controls --current-slide
+          - format: xetex
+            params: --generator --time --source-link --verbose --strict --traceback --output-encoding=us-ascii:strict --pep-references --rfc-references --smart-quotes=yes --embed-stylesheet --use-part-section --use-latex-docinfo --use-latex-abstract
+          - format: xml
+            params: --generator --time --source-link --verbose --strict --traceback --output-encoding=us-ascii:strict --pep-references --rfc-references --smart-quotes=yes --newlines --indents
+    needs: GNATdoc # TODO Unnecessarily waiting for all matrix variants due to https://github.com/orgs/community/discussions/42335
+    runs-on: ubuntu-24.04
+    steps:
+      - name: Harden Runner
+        uses: step-security/harden-runner@cb605e52c26070c328afc4562f0b4ada7618a84e # v2.10.4
+        with:
+          disable-sudo: true
+          egress-policy: block
+          allowed-endpoints: >
+            github.com:443
+            objects.githubusercontent.com:443
+            pypi.org:443
+            files.pythonhosted.org:443
+
+      - name: Download Documentation Artifact
+        uses: actions/download-artifact@fa0a91b85d4f404e444e00e005971372dc801d16
+        with:
+          name: GNATdoc-rst
+          path: doc/rst
+
+      - name: Setup Python
+        uses: actions/setup-python@42375524e23c412d93fb67b49958b491fce71c38
+        with:
+          cache: pip
+
+      - name: Install docutils and sphinxcontrib-adadomain
+        run: pip install -U docutils git+https://github.com/AdaCore/sphinxcontrib-adadomain
+
+      - name: rst to ${{ matrix.format }}
+        id: rst_to
+        run: for SOURCE in doc/rst/*.rst; do rst2${{ matrix.format }} ${{ matrix.params }} --output=doc/${{ matrix.format }} "${SOURCE}"; done
+
+      - name: Show help on failure
+        if: failure() && steps.rst_to.conclusion == 'failure'
+        run: rst2${{ matrix.format }} --help
+        continue-on-error: true
+
+      - name: Upload Documentation Artifact
+        uses: actions/upload-artifact@65c4c4a1ddee5b72f698fdd19549f0f0fb45cf08
+        with:
+          name: GNATdoc-rst-${{ matrix.format }}
+          path: doc/${{ matrix.format }}

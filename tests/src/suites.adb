@@ -34,18 +34,18 @@
 --  any license terms which apply to the Application, with which you must
 --  still comply.
 
-with AUnit.Test_Suites;
-with AUnit.Test_Cases;
-with To_Interval_Test;
+with Generic_Suite;
 
-package body A_Suite is
+package body Suites is
+   type Integer_Unsigned_Zero is delta 1.0 range 0.0 .. 0.0;
+   package Integer_Unsigned_Zero_Suite is new
+     Generic_Suite (G => Integer_Unsigned_Zero);
 
-   function Suite return AUnit.Test_Suites.Access_Test_Suite is
-      Ret : constant Access_Test_Suite := new Test_Suite;
+   function Master_Suite return AUnit.Test_Suites.Access_Test_Suite is
+      Result : constant AUnit.Test_Suites.Access_Test_Suite :=
+        AUnit.Test_Suites.New_Suite;
    begin
-      Ret.Add_Test
-        (AUnit.Test_Cases.Test_Case_Access'
-           (new To_Interval_Test.To_Interval_Test));
-      return Ret;
-   end Suite;
-end A_Suite;
+      Result.Add_Test (Integer_Unsigned_Zero_Suite.Suite);
+      return Result;
+   end Master_Suite;
+end Suites;

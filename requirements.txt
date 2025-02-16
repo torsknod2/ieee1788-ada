@@ -1,1 +1,3 @@
+docutils
 pre-commit
+git+https://github.com/AdaCore/sphinxcontrib-adadomain

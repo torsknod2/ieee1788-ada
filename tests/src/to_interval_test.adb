@@ -34,47 +34,33 @@
 --  any license terms which apply to the Application, with which you must
 --  still comply.
 
-with Ada.Command_Line;
-with Ada.Text_IO;
-with AUnit.Run;
-with AUnit.Reporter.XML;
-with Suites;
+with AUnit.Assertions;
+with Ieee1788;
 
-procedure IEEE1788_Tests is
-   procedure Run is new AUnit.Run.Test_Runner (Suites.Master_Suite);
-   Reporter_File : aliased Ada.Text_IO.File_Type;
-   Reporter      : AUnit.Reporter.XML.XML_Reporter;
-   procedure Finally;
-   procedure Finally is
+package body To_Interval_Test is
+   package Ieee1788_Instance is new Ieee1788 (G);
+   function Name (T : Test) return AUnit.Message_String is
+      pragma Unreferenced (T);
    begin
-      begin
-         Ada.Text_IO.Close (Reporter_File);
-      exception
-         when others =>
-            null;
-      end;
-      begin
-         Ada.Text_IO.Delete (Reporter_File);
-      exception
-         when others =>
-            null;
-      end;
-      pragma Annotate (Xcov, Dump_Buffers);
-   end Finally;
-begin
-   if Ada.Command_Line.Argument_Count >= 1 then
-      Ada.Text_IO.Create
-        (Reporter_File, Ada.Text_IO.Out_File, Ada.Command_Line.Argument (1));
-      Reporter.Set_File (Reporter_File'Unchecked_Access);
-   else
-      null;
-   end if;
+      return AUnit.Format ("Test IEEE 1788 To_Interval function");
+   end Name;
+
+   procedure Run_Test (T : in out Test) is
+      pragma Unreferenced (T);
    begin
-      Run (Reporter);
-   exception
-      when others =>
-         Finally;
-         raise;
-   end;
-   Finally;
-end IEEE1788_Tests;
+      AUnit.Assertions.Assert
+        (Ieee1788_Instance.To_String (Ieee1788_Instance.To_Interval (G'First)),
+         "[" & G'Image (G'First) & "," & G'Image (G'First) & "]",
+         "Test Low");
+      if G'First < 0.0 and G'Last > 0.0 then
+         AUnit.Assertions.Assert
+           (Ieee1788_Instance.To_String (Ieee1788_Instance.To_Interval (0.0)),
+            "[" & G'Image (0.0) & "," & G'Image (0.0) & "]",
+            "Test High");
+      end if;
+      AUnit.Assertions.Assert
+        (Ieee1788_Instance.To_String (Ieee1788_Instance.To_Interval (G'Last)),
+         "[" & G'Image (G'Last) & "," & G'Image (G'Last) & "]",
+         "Test High");
+   end Run_Test;
+end To_Interval_Test;

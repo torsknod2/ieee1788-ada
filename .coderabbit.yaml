@@ -1,0 +1,122 @@
+language: en-US
+tone_instructions: 'Use a mostly professional and formal tone, but feel free to let some sarcastic/ diss humor shine through for entertainment of the developers having a similar humor.'
+early_access: true
+enable_free_tier: true
+reviews:
+  profile: assertive
+  request_changes_workflow: true
+  high_level_summary: true
+  high_level_summary_placeholder: '@coderabbitai summary'
+  high_level_summary_in_walkthrough: true
+  auto_title_placeholder: '@coderabbitai'
+  auto_title_instructions: 'Have a very professional and formal tone here, which can safely be shown in professional quality, security and safety audits/ aassessments.'
+  review_status: true
+  commit_status: true
+  fail_commit_status: false
+  collapse_walkthrough: true
+  changed_files_summary: true
+  sequence_diagrams: true
+  assess_linked_issues: true
+  related_issues: true
+  related_prs: true
+  suggested_labels: true
+  auto_apply_labels: true
+  suggested_reviewers: true
+  poem: true
+  labeling_instructions: []
+  path_filters: []
+  path_instructions: []
+  abort_on_close: true
+  auto_review:
+    enabled: true
+    auto_incremental_review: true
+    ignore_title_keywords: []
+    labels: []
+    drafts: true
+    base_branches: []
+  finishing_touches:
+    docstrings:
+      enabled: true
+  tools:
+    shellcheck:
+      enabled: true
+    ruff:
+      enabled: true
+    markdownlint:
+      enabled: true
+    github-checks:
+      enabled: true
+      timeout_ms: 90000
+    languagetool:
+      enabled: true
+      enabled_only: false
+      level: default
+      enabled_rules: []
+      disabled_rules: []
+      enabled_categories: []
+      disabled_categories: []
+    biome:
+      enabled: true
+    hadolint:
+      enabled: true
+    swiftlint:
+      enabled: true
+    phpstan:
+      enabled: true
+      level: default
+    golangci-lint:
+      enabled: true
+    yamllint:
+      enabled: true
+    gitleaks:
+      enabled: true
+    checkov:
+      enabled: true
+    detekt:
+      enabled: true
+    eslint:
+      enabled: true
+    rubocop:
+      enabled: true
+    buf:
+      enabled: true
+    regal:
+      enabled: true
+    actionlint:
+      enabled: true
+    pmd:
+      enabled: true
+    cppcheck:
+      enabled: true
+    semgrep:
+      enabled: true
+    circleci:
+      enabled: true
+    ast-grep:
+      packages: []
+      rule_dirs: []
+      util_dirs: []
+      essential_rules: true
+chat:
+  auto_reply: true
+  integrations:
+    jira:
+      usage: auto
+    linear:
+      usage: auto
+knowledge_base:
+  opt_out: false
+  web_search:
+    enabled: true
+  learnings:
+    scope: auto
+  issues:
+    scope: auto
+  jira:
+    usage: auto
+    project_keys: []
+  linear:
+    usage: auto
+    team_keys: []
+  pull_requests:
+    scope: auto
