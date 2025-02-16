@@ -141,7 +141,7 @@ package body Ieee1788 is
    begin
       for Index in Right'Range loop
          if Index > 0 then
-            Temp := Hull (Temp, Right (Index)));
+            Temp := Hull (Temp, Right (Index));
          else
             null;
          end if;
@@ -340,9 +340,9 @@ package body Ieee1788 is
       Table :
         constant array (Sign, Sign)
         of access function (Left, Right : Interval) return Interval :=
-          [[MulNN'Access, MulNM'Access, MulNP'Access],
-           [MulMN'Access, MulMM'Access, MulMP'Access],
-           [MulPN'Access, MulPM'Access, MulPP'Access]];
+          [ [MulNN'Access, MulNM'Access, MulNP'Access],
+            [MulMN'Access, MulMM'Access, MulMP'Access],
+            [MulPN'Access, MulPM'Access, MulPP'Access] ];
       Signs : constant array (1 .. 2, 1 .. 2) of Sign :=
         [[Sign (Left.Lower_Bound), Sign (Left.Upper_Bound)],
          [Sign (Right.Lower_Bound), Sign (Right.Upper_Bound)]];
