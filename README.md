@@ -85,9 +85,12 @@ Coverage reports can be generated in various formats:
 
 ### Documentation
 
-TODO: Build documentation
+TODO [Documentation](https://torsknod2.github.io/ieee1788-ada/)
 
 ## Contribute
+
+For detailed information about contributing to this project, please see our
+[CONTRIBUTING.md](CONTRIBUTING.md) guide.
 
 ### Pre-commit Checks
 
@@ -96,8 +99,6 @@ TODO: Build documentation
 pip install -r requirements.txt
 pre-commit run --all-files
 ```
-
-TODO: Explain how other users and developers can contribute to make your code better.
 
 If you want to learn more about creating good readme files then refer the following
 [guidelines](https://docs.microsoft.com/en-us/azure/devops/repos/git/create-a-readme?view=azure-devops).
