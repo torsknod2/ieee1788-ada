@@ -182,8 +182,7 @@ jobs:
         uses: actions/upload-artifact@65c4c4a1ddee5b72f698fdd19549f0f0fb45cf08
         with:
           name: Builds
-          path: |
-            {$HOME}/.local/share/alire/builds
+          path: ~/.local/share/alire/builds
 
       - name: Upload Test Results
         uses: actions/upload-artifact@65c4c4a1ddee5b72f698fdd19549f0f0fb45cf08
@@ -227,8 +226,7 @@ jobs:
         uses: actions/download-artifact@fa0a91b85d4f404e444e00e005971372dc801d16
         with:
           name: Builds
-          path: |
-            {$HOME/.local/share/alire/builds/}
+          path: ~/.local/share/alire/builds/
 
       - name: Setup Alire
         uses: alire-project/setup-alire@678ded26f00993ff4ae2ab42248c44e887c1f2e7 # v4

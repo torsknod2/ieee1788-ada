@@ -137,15 +137,22 @@ for toml_file in args.files:
         data: tomlkit.TOMLDocument = tomlkit.load(f)
 
     if "version" in data:
-        condition: bool = data["version"] != str(version)
         logging.log(
-            logging.WARN if condition else logging.INFO,
+            (
+                logging.ERROR
+                if data["version"] < str(version)
+                else (
+                    logging.INFO
+                    if data["version"] == str(version)
+                    else (logging.WARNING)
+                )
+            ),
             "%s%s%s",
             data["version"],
-            " != " if condition else " == ",
+            " == " if data["version"] == str(version) else " != ",
             version,
         )
-        if condition:
+        if data["version"] != str(version):
             data["version"] = str(version)
             with open(toml_file, mode="w", encoding="US-ASCII") as f:
                 tomlkit.dump(data, f)
