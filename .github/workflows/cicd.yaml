@@ -81,6 +81,8 @@ jobs:
       - name: Install pre-commit
         run: pip install pre-commit==4.1.0
 
+      - run: git log
+
       - name: Run pre-commit
         run: pre-commit run --all-files --show-diff-on-failure
 
@@ -226,7 +228,8 @@ jobs:
 
       - run: chmod -c +x $GITHUB_WORKSPACE/alire_*/bin/*
 
-      - run: alr install
+      - name: Alire Generate Configuration
+        run: alr --chdir=$GITHUB_WORKSPACE/tests --non-interactive --force build --validation --stop-after=generation
 
       - name: Alire GNATcov ${{ matrix.level }} Report in ${{ matrix.annotate }}
         #        run: find . -name "*.srctrace" -print0 | xargs -0 realpath | xargs alr --chdir=$GITHUB_WORKSPACE/tests --non-interactive --force gnatcov coverage --annotate=${{ matrix.annotate }} --output-dir $GITHUB_WORKSPACE/gnatcov_out --level=${{ matrix.level }} --projects $GITHUB_WORKSPACE/ieee1788.gpr
