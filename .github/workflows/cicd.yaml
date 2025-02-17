@@ -271,6 +271,7 @@ jobs:
             codecov.io:443
             files.pythonhosted.org:443
             pypi.org:443
+            storage.googleapis.com:443
             uploader.codecov.io:443
 
       - name: Download Coverage Artifact
