@@ -36,11 +36,34 @@ which apply to the Application, with which you must still comply.
 """
 
 import argparse
+import logging
 import pathlib
 import semver
 import subprocess
 import sys
 import tomlkit
+
+LOG_LEVELS = {
+    "DEBUG": logging.DEBUG,
+    "INFO": logging.INFO,
+    "WARNING": logging.WARNING,
+    "ERROR": logging.ERROR,
+    "CRITICAL": logging.CRITICAL,
+}
+
+
+def parse_log_level(level_str: str) -> int:
+    """Parse string or int to logging level"""
+    try:
+        # Versuche als Integer zu parsen
+        return int(level_str)
+    except ValueError:
+        # Versuche als Namen zu parsen
+        level = LOG_LEVELS.get(level_str.upper())
+        if level is not None:
+            return level
+        raise ValueError(f"Invalid log level: {level_str}")
+
 
 parser = argparse.ArgumentParser(
     description="Check and sync semantic versions across project"
@@ -51,8 +74,15 @@ parser.add_argument(
     help="Files to check",
     default=pathlib.Path(".").rglob("alire.toml"),
 )
+parser.add_argument(
+    "--log-level",
+    default="INFO",
+    help="Logging level (DEBUG, INFO, WARNING, ERROR, CRITICAL or integer)",
+    type=parse_log_level,
+)
 args = parser.parse_args()
 
+logging.basicConfig(level=args.log_level)
 
 version: semver.Version
 count: int
@@ -80,6 +110,7 @@ except (subprocess.CalledProcessError, ValueError, TypeError):
         .decode()
         .strip()
     )
+logging.info("Raw Version=%s Count=%s", version, count)
 
 clean: bool = (
     subprocess.check_output(["git", "status", "--porcelain"], shell=False)
@@ -87,19 +118,27 @@ clean: bool = (
     .strip()
     == ""
 )
+logging.info("Clean=%r", clean)
 
 build: int = count + (0 if clean else 1)
+logging.info("Build=%i", build)
 
 if build > 0:
     version = version.replace(prerelease="dev", build=build)
+logging.info("Calculated Version=%s", version)
 
 success: bool = True
 for toml_file in args.files:
+    logging.info("Processing: %r", toml_file)
     with open(toml_file, encoding="US-ASCII") as f:
         data: tomlkit.TOMLDocument = tomlkit.load(f)
 
     if "version" in data:
-        if data["version"] != str(version):
+        condition: bool = data["version"] != str(version)
+        logging.info(
+            "%s%s%s", data["version"], " == " if condition else " != ", version
+        )
+        if condition:
             data["version"] = str(version)
             with open(toml_file, mode="w", encoding="US-ASCII") as f:
                 tomlkit.dump(data, f)
