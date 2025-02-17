@@ -136,7 +136,7 @@ for toml_file in args.files:
     if "version" in data:
         condition: bool = data["version"] != str(version)
         logging.info(
-            "%s%s%s", data["version"], " == " if condition else " != ", version
+            "%s%s%s", data["version"], " != " if condition else " == ", version
         )
         if condition:
             data["version"] = str(version)
