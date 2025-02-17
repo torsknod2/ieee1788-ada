@@ -42,8 +42,9 @@ the ultimate goal is to develop a library suitable for:
 
 ### Security Reports
 
-For security-related issues, please use GitHub's [private vulnerability reporting]
-(<https://github.com/torsknod2/ieee1788-ada/security/advisories>) feature.
+For security-related issues, please use GitHub's
+[private vulnerability reporting](https://github.com/torsknod2/ieee1788-ada/security/advisories)
+feature.
 
 ## Special Request for Industry Expertise
 
@@ -67,8 +68,7 @@ requirements would be invaluable in making this library more broadly applicable.
 
 ## Code of Conduct
 
-Please note that this project follows the[Contributor Covenant]
-(<https://www.contributor-covenant.org/version/2/1/code_of_conduct/>).
+Please note that this project follows the [Contributor Covenant](https://www.contributor-covenant.org/version/2/1/code_of_conduct/).
 
 ## License
 
