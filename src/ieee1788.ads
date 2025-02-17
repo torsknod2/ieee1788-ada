@@ -85,8 +85,8 @@ package Ieee1788 is
    --  @return Interval [Lower_Bound,Upper_Bound]
    --  @pre Lower_Bound <= Upper_Bound
    --  @see IEEE 1788-2015 Section 6.3 "interval literals"
-   function To_Interval (Lower_Bound, Upper_Bound : T) return Interval
-   with Pre => Lower_Bound <= Upper_Bound;
+   function To_Interval (Lower_Bound, Upper_Bound : T) return Interval with
+     Pre => Lower_Bound <= Upper_Bound;
 
    --  Converts interval to string representation
    --  @param Right The interval to convert
@@ -226,46 +226,41 @@ private
    type Interval is record
       Lower_Bound : T;
       Upper_Bound : T;
-   end record
-   with Type_Invariant => Lower_Bound <= Upper_Bound;
+   end record with
+     Type_Invariant => Lower_Bound <= Upper_Bound;
 
-   --  Sign indicator for numbers
-   --  -1 for negative, 0 for zero, 1 for positive
+     --  Sign indicator for numbers
+     --  -1 for negative, 0 for zero, 1 for positive
    subtype Sign is Integer range -1 .. 1;
 
    --  Returns sign of a number
    --  @param Right The number to test
    --  @return Sign indicator (-1,0,1)
    --  @see IEEE 1788-2015 Section 8.3
-   function Sgn (Right : T) return Sign
-   with
+   function Sgn (Right : T) return Sign with
      Post =>
-       (Right < T (0) and then Sgn'Result = -1)
-       or (Right = T (0) and then Sgn'Result = 0)
-       or (Right > T (0) and then Sgn'Result = 1);
+      (Right < T (0) and then Sgn'Result = -1) or
+      (Right = T (0) and then Sgn'Result = 0) or
+      (Right > T (0) and then Sgn'Result = 1);
 
    --  Returns minimum of two numbers
    --  @param Left First number
    --  @param Right Second number
    --  @return The smaller value
    --  @see IEEE 1788-2015 Section 8.3
-   function Min (Left, Right : T) return T
-   with
+   function Min (Left, Right : T) return T with
      Post =>
-       Min'Result <= Left
-       and then Min'Result <= Right
-       and then (Min'Result = Left or Min'Result = Right);
+      Min'Result <= Left and then Min'Result <= Right
+      and then (Min'Result = Left or Min'Result = Right);
 
    --  Returns maximum of two numbers
    --  @param Left First number
    --  @param Right Second number
    --  @return The larger value
    --  @see IEEE 1788-2015 Section 8.3
-   function Max (Left, Right : T) return T
-   with
+   function Max (Left, Right : T) return T with
      Post =>
-       Max'Result >= Left
-       and then Max'Result >= Right
-       and then (Max'Result = Left or Max'Result = Right);
+      Max'Result >= Left and then Max'Result >= Right
+      and then (Max'Result = Left or Max'Result = Right);
 
 end Ieee1788;
