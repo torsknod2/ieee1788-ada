@@ -79,3 +79,4 @@ repos:
       additional_dependencies: ['tomlkit', 'semver']
       files: 'alire\.toml$'
       pass_filenames: true
+      always_run: true
