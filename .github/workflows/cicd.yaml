@@ -234,7 +234,7 @@ jobs:
       - name: Install FSF toolchain
         uses: alire-project/alr-install@b9d8855d9aba7d57fa27e70c1e6f8218f8c127c0
         with:
-          crates: gnatcov
+          crates: gnat_native gprbuild gnatcov
 
       - run: chmod -c +x $GITHUB_WORKSPACE/alire_*/bin/*
 
