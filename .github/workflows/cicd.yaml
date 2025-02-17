@@ -70,6 +70,8 @@ jobs:
         uses: actions/checkout@11bd71901bbe5b1630ceea73d27597364c9af683
         with:
           fetch-depth: 0
+          fetch-tags: true
+          filter: tree:0
 
       - name: Setup Python
         uses: actions/setup-python@42375524e23c412d93fb67b49958b491fce71c38
@@ -227,10 +229,9 @@ jobs:
       - name: Alire GNATcov ${{ matrix.level }} Report in ${{ matrix.annotate }}
         #        run: find . -name "*.srctrace" -print0 | xargs -0 realpath | xargs alr --chdir=$GITHUB_WORKSPACE/tests --non-interactive --force gnatcov coverage --annotate=${{ matrix.annotate }} --output-dir $GITHUB_WORKSPACE/gnatcov_out --level=${{ matrix.level }} --projects $GITHUB_WORKSPACE/ieee1788.gpr
         run: |
-          cat /home/runner/work/_temp/*.sh
           set -x
           cd $GITHUB_WORKSPACE/tests
-          eval $(alr printenv)
+          eval $(alr printenv | egrep "^export")
           find . -name "*.srctrace" -print0 | xargs -0 realpath | xargs $GITHUB_WORKSPACE/alire_prefix/bin/gnatcov coverage -P ieee1788_tests.gpr --annotate=${{ matrix.annotate }} --output-dir $GITHUB_WORKSPACE/gnatcov_out --level=${{ matrix.level }} --projects $GITHUB_WORKSPACE/ieee1788.gpr
 
       - name: Publish Coverage Output
