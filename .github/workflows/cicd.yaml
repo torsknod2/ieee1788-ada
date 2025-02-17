@@ -68,6 +68,10 @@ jobs:
 
       - name: Checkout code
         uses: actions/checkout@11bd71901bbe5b1630ceea73d27597364c9af683
+        with:
+          fetch-depth: 0
+          fetch-tags: true
+          filter: tree:0
 
       - name: Setup Python
         uses: actions/setup-python@42375524e23c412d93fb67b49958b491fce71c38
@@ -75,7 +79,9 @@ jobs:
           cache: pip
 
       - name: Install pre-commit
-        run: pip install pre-commit
+        run: pip install pre-commit==4.1.0
+
+      - run: git log --no-merges
 
       - name: Run pre-commit
         run: pre-commit run --all-files --show-diff-on-failure
@@ -169,37 +175,126 @@ jobs:
           name: aunit_results.xml
           path: aunit_results.xml
 
-      # TODO Add this later, when we also have object coverage
-      # - name: Alire GNATcov Report ASM
-      #   run: alr --chdir=$GITHUB_WORKSPACE/tests --non-interactive --force gnatcov coverage --annotate=asm --output-dir $GITHUB_WORKSPACE/gnatcov_out --level=stmt+mcdc --projects ieee1788.gpr $GITHUB_WORKSPACE/tests/*.srctrace
+      - name: Publish All
+        run: git ls-files > exclude_list.txt
 
-      - name: Alire GNATcov Report XCOV+
-        run: alr --chdir=$GITHUB_WORKSPACE/tests --non-interactive --force gnatcov coverage --annotate=xcov+ --output-dir $GITHUB_WORKSPACE/gnatcov_out --level=stmt+mcdc --projects ieee1788.gpr $GITHUB_WORKSPACE/tests/*.srctrace
-
-      - name: Alire GNATcov Report HTML
-        run: alr --chdir=$GITHUB_WORKSPACE/tests --non-interactive --force gnatcov coverage --annotate=html+ --output-dir $GITHUB_WORKSPACE/gnatcov_out --level=stmt+mcdc --projects ieee1788.gpr $GITHUB_WORKSPACE/tests/*.srctrace
-
-      # TODO "GNATquilt" is missing, whatever this is.
-      # - name: Alire GNATcov Report DHTML
-      #   run: alr --chdir=$GITHUB_WORKSPACE/tests --non-interactive --force gnatcov coverage --annotate=dhtml --output-dir $GITHUB_WORKSPACE/gnatcov_out --level=stmt+mcdc --projects ieee1788.gpr $GITHUB_WORKSPACE/tests/*.srctrace
-
-      - name: Alire GNATcov Report Sarif
-        run: alr --chdir=$GITHUB_WORKSPACE/tests --non-interactive --force gnatcov coverage --annotate=report --output-dir $GITHUB_WORKSPACE/gnatcov_out --level=stmt+mcdc --projects ieee1788.gpr $GITHUB_WORKSPACE/tests/*.srctrace
-
-      - name: Publish GNATcov Output
+      - name: Upload Builds
         uses: actions/upload-artifact@65c4c4a1ddee5b72f698fdd19549f0f0fb45cf08
         with:
-          name: gnatcov_out
-          path: gnatcov_out
+          name: Builds
+          path: ~/.local/share/alire/builds
+
+      - name: Upload Test Results
+        uses: actions/upload-artifact@65c4c4a1ddee5b72f698fdd19549f0f0fb45cf08
+        with:
+          name: Test_Result
+          path: |
+            **
+            !{$(cat exclude_list.txt)}
+            !exclude_list.txt
+            !alire_install
+            !alire_prefix
+
+  UploadCodeCoverage:
+    needs: [Test]
+    runs-on: ubuntu-24.04
+    strategy:
+      matrix:
+        # TODO "GNATquilt" is missing for dhtml, whatever this is.
+        # Wait for SARIF support
+        level: ["branch", "stmt+mcdc"]
+        annotate: ["asm", "xcov+", "html+", "report"]
+        exclude:
+          - level: "stmt+mcdc"
+            annotate: "asm"
+          - level: "branch"
+            annotate: "report"
+    steps:
+      - name: Harden Runner
+        uses: step-security/harden-runner@cb605e52c26070c328afc4562f0b4ada7618a84e # v2.10.4
+        with:
+          disable-sudo: true
+          egress-policy: block
+          allowed-endpoints: >
+            github.com:443
+            objects.githubusercontent.com:443
+
+      - name: Download Test Artifact
+        uses: actions/download-artifact@fa0a91b85d4f404e444e00e005971372dc801d16
+        with:
+          name: Test_Result
+
+      - name: Download Builds
+        uses: actions/download-artifact@fa0a91b85d4f404e444e00e005971372dc801d16
+        with:
+          name: Builds
+          path: ~/.local/share/alire/builds/
+
+      - name: Setup Alire
+        uses: alire-project/setup-alire@678ded26f00993ff4ae2ab42248c44e887c1f2e7 # v4
+
+      - name: Install FSF toolchain
+        uses: alire-project/alr-install@b9d8855d9aba7d57fa27e70c1e6f8218f8c127c0
+        with:
+          crates: gnat_native gprbuild gnatcov
+
+      - run: chmod -c +x $GITHUB_WORKSPACE/alire_*/bin/*
+
+      - name: Alire Generate Configuration
+        run: alr --chdir=$GITHUB_WORKSPACE/tests --non-interactive --force build --validation --stop-after=generation
+
+      - name: Alire GNATcov ${{ matrix.level }} Report in ${{ matrix.annotate }}
+        #        run: find . -name "*.srctrace" -print0 | xargs -0 realpath | xargs alr --chdir=$GITHUB_WORKSPACE/tests --non-interactive --force gnatcov coverage --annotate=${{ matrix.annotate }} --output-dir $GITHUB_WORKSPACE/gnatcov_out --level=${{ matrix.level }} --projects $GITHUB_WORKSPACE/ieee1788.gpr
+        run: |
+          set -x
+          cd $GITHUB_WORKSPACE/tests
+          eval $(alr printenv | egrep "^export")
+          find . -name "*.srctrace" -print0 | xargs -0 realpath | xargs $GITHUB_WORKSPACE/alire_prefix/bin/gnatcov coverage -P ieee1788_tests.gpr --annotate=${{ matrix.annotate }} --output-dir $GITHUB_WORKSPACE/gnatcov_out --level=${{ matrix.level }} --projects $GITHUB_WORKSPACE/ieee1788.gpr
+
+      - name: Publish Coverage Output
+        uses: actions/upload-artifact@65c4c4a1ddee5b72f698fdd19549f0f0fb45cf08
+        with:
+          name: gnatcov_${{ matrix.level }}_${{ matrix.annotate }}
+          path: .
+
+  PublishCodeCoverage:
+    needs: [UploadCodeCoverage] # TODO Unnecessarily waiting for all matrix variants due to https://github.com/orgs/community/discussions/42335
+    runs-on: ubuntu-24.04
+    steps:
+      - name: Harden Runner
+        uses: step-security/harden-runner@cb605e52c26070c328afc4562f0b4ada7618a84e # v2.10.4
+        with:
+          disable-sudo: true
+          egress-policy: block
+          allowed-endpoints: >
+            api.github.com:443
+            codecov.io:443
+            files.pythonhosted.org:443
+            pypi.org:443
+            storage.googleapis.com:443
+            uploader.codecov.io:443
+
+      - name: Download Coverage Artifact
+        uses: actions/download-artifact@fa0a91b85d4f404e444e00e005971372dc801d16
+        with:
+          name: gnatcov_stmt+mcdc_xcov+
+
+      - name: Setup Python
+        uses: actions/setup-python@42375524e23c412d93fb67b49958b491fce71c38
+        with:
+          cache: pip
+
+      - name: Install coveragepy
+        run: pip install coveragepy==1.6.0
 
       - uses: alire-project/gnatcov-to-codecovio-action@54d55a0259f7b7a272cb25232f0d29a57ee2b699
-        if: github.ref == 'refs/heads/main'
         with:
           fail_ci_if_error: true
+          token: ${{ secrets.CODECOV_TOKEN }}
           verbose: true
 
   Publish:
-    needs: [GNATprove, Test, pre-commit]
+    needs: [pre-commit, GNATprove, Test, FlawFinder, ScoreCardAnalysis]
     runs-on: ubuntu-24.04
     steps:
       - name: Harden Runner
@@ -232,7 +327,6 @@ jobs:
           path: alire/archive/
 
   GNATdoc:
-    needs: pre-commit
     runs-on: ubuntu-24.04
     strategy:
       matrix:
@@ -287,8 +381,15 @@ jobs:
           name: GNATdoc-${{ matrix.backend }}
           path: doc/${{ matrix.backend }}
 
+  DeployGNATdocToGitHubPages:
+    needs: GNATdoc
+    if: github.ref == 'refs/heads/main' || (startsWith(github.ref, 'refs/tags/') && github.event.base_ref == 'refs/heads/main')
+    runs-on: ubuntu-24.04
+    permissions:
+      pages: write
+      id-token: write
+    steps:
       - name: Deploy to GitHub Pages
-        if: matrix.backend == 'html' && (github.ref == 'refs/heads/main' || (startsWith(github.ref, 'refs/tags/') && github.event.base_ref == 'refs/heads/main'))
         uses: actions/deploy-pages@d6db90164ac5ed86f2b6aed7e0febac5b3c0c03e
         with:
           artifact_name: GNATdoc-html
@@ -344,7 +445,7 @@ jobs:
           cache: pip
 
       - name: Install docutils and sphinxcontrib-adadomain
-        run: pip install -U docutils git+https://github.com/AdaCore/sphinxcontrib-adadomain
+        run: pip install -U docutils==0.21.2 git+https://github.com/AdaCore/sphinxcontrib-adadomain
 
       - name: rst to ${{ matrix.format }}
         id: rst_to
@@ -360,8 +461,7 @@ jobs:
         with:
           name: GNATdoc-rst-${{ matrix.format }}
           path: doc/${{ matrix.format }}
-  flawfinder:
-    name: Flawfinder
+  FlawFinder:
     runs-on: ubuntu-latest
     permissions:
       actions: read

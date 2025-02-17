@@ -34,9 +34,10 @@
 name = "ieee1788"
 description = "IEEE 1788.1 library"
 long-description = "This library implements the IEEE 1788.1 specification for interval arithmetic."
-version = "0.0.1-dev"
+version = "0.0.1-dev+54"
 licenses = "LGPL-3.0-or-later WITH LGPL-3.0-linking-exception"
 tags = ["ada", "math", "library"]
 
 authors = ["Torsten Knodt"]
 maintainers = ["Torsten Knodt <torsten.knodt@datas-world.de>"]
+maintainers-logins = ["torsknod2"]

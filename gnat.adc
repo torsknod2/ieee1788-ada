@@ -31,7 +31,7 @@
 --  from your version. This exception does not (and cannot) modify any license terms
 --  which apply to the Application, with which you must still comply.
 
-pragma Ada_2012; -- FIXME 2022
+pragma Ada_2022;
 --- pragma Aggregate_Individually_Assign;
 --- pragma Allow_Integer_Address;
 --- pragma Annotate;
