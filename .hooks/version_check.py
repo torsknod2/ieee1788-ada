@@ -98,7 +98,7 @@ try:
     )
     count = int(
         subprocess.check_output(
-            ["git", "rev-list", f"{tag}..HEAD", "--count"], shell=False
+            ["git", "rev-list", str(version) + "..HEAD", "--count"], shell=False
         )
         .decode()
         .strip()
