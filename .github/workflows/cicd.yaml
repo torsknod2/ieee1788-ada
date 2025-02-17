@@ -226,6 +226,8 @@ jobs:
         with:
           crates: gnatcov
 
+      - run: chmod +vx $GITHUB_WORKSPACE/alire_*/bin/*
+
       - name: Alire GNATcov ${{ matrix.level }} Report in ${{ matrix.annotate }}
         #        run: find . -name "*.srctrace" -print0 | xargs -0 realpath | xargs alr --chdir=$GITHUB_WORKSPACE/tests --non-interactive --force gnatcov coverage --annotate=${{ matrix.annotate }} --output-dir $GITHUB_WORKSPACE/gnatcov_out --level=${{ matrix.level }} --projects $GITHUB_WORKSPACE/ieee1788.gpr
         run: |
