@@ -34,7 +34,7 @@
 name = "ieee1788_tests"
 description = "IEEE 1788 library tests"
 long-description = "AUnit tests for the Native IEEE 1788 library"
-version = "0.0.1-dev+46"
+version = "0.0.1-dev+47"
 licenses = "LGPL-3.0-or-later WITH LGPL-3.0-linking-exception"
 tags = ["ada", "math", "library"]
 
