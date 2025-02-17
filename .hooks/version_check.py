@@ -98,7 +98,8 @@ try:
     )
     count = int(
         subprocess.check_output(
-            ["git", "rev-list", str(version) + "..HEAD", "--count"], shell=False
+            ["git", "rev-list", str(version) + "..HEAD", "--count", "--no-merges"],
+            shell=False,
         )
         .decode()
         .strip()
@@ -106,7 +107,9 @@ try:
 except (subprocess.CalledProcessError, ValueError, TypeError):
     version = semver.Version.parse("0.0.1")
     count = int(
-        subprocess.check_output(["git", "rev-list", "HEAD", "--count"], shell=False)
+        subprocess.check_output(
+            ["git", "rev-list", "HEAD", "--count", "--no-merges"], shell=False
+        )
         .decode()
         .strip()
     )
