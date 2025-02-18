@@ -303,7 +303,7 @@ jobs:
         with:
           ref: ${{ github.ref }}
           repo-token: ${{ secrets.GITHUB_TOKEN }}
-          check-name: ScoreCardAnalysis
+          check-name: "OSSF ScoreCard"
           allowed-conclusions: success
 
   Publish:
