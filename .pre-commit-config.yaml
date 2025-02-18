@@ -74,13 +74,15 @@ repos:
   hooks:
     - id: version-check
       name: Check semantic versions
-      entry: .hooks/version_check.py
+      entry: hooks/version_check.py
       language: python
-      additional_dependencies: ['tomlkit', 'semver']
+      additional_dependencies: ['semver', 'tomlkit']
       files: 'alire\.toml$'
       pass_filenames: true
       always_run: true
+
 - repo: https://github.com/pylint-dev/pylint
-  rev: v2.17.2
+  rev: v3.3.4
   hooks:
   - id: pylint
+    additional_dependencies: ['semver', 'tomlkit']
