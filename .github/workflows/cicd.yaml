@@ -260,6 +260,8 @@ jobs:
   PublishCodeCoverage:
     needs: [UploadCodeCoverage] # TODO Unnecessarily waiting for all matrix variants due to https://github.com/orgs/community/discussions/42335
     runs-on: ubuntu-24.04
+    permissions:
+      contents: read
     steps:
       - name: Harden Runner
         uses: step-security/harden-runner@4d991eb9b905ef189e4c376166672c3f2f230481 # v2.11.0
