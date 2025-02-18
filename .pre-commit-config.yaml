@@ -80,3 +80,7 @@ repos:
       files: 'alire\.toml$'
       pass_filenames: true
       always_run: true
+- repo: https://github.com/pylint-dev/pylint
+  rev: v2.17.2
+  hooks:
+  - id: pylint
