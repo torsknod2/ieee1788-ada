@@ -1,1 +1,3 @@
 coveragepy==1.6.0 --hash=sha256:a2a29ec8ee985a5ea27dcc3aa3230bacb6593f38ed102cc6aadf00da74be2de6 --hash=sha256:37a955c9e95da9a6b5c8ae445eb60856e9e631a07528547ff0e45aadb701d925
+# These are here, because the coveragepy dependencies do not have hashes:
+flask==1.0.2 --hash=sha256:a080b744b7e345ccfcbc77954861cb05b3c63786e93f2b3875e0913d44b43f05
