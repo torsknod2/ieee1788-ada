@@ -296,6 +296,7 @@ jobs:
           verbose: true
 
   WaitForSuccessfulScoreCardAnalysis:
+    needs: [pre-commit, GNATprove, Test, FlawFinder]
     runs-on: ubuntu-24.04
     steps:
       - name: Harden the runner (Audit all outbound calls)
@@ -312,14 +313,7 @@ jobs:
           allowed-conclusions: success
 
   Publish:
-    needs:
-      [
-        pre-commit,
-        GNATprove,
-        Test,
-        FlawFinder,
-        WaitForSuccessfulScoreCardAnalysis,
-      ]
+    needs: [WaitForSuccessfulScoreCardAnalysis]
     runs-on: ubuntu-24.04
     steps:
       - name: Harden Runner
