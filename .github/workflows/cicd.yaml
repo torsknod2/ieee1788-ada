@@ -278,10 +278,6 @@ jobs:
         with:
           cache: pip
 
-      - name: Install coveragepy
-        run: |
-          pip install --require-hashes -r requirements-coveragepy.txt
-
       - uses: alire-project/gnatcov-to-codecovio-action@54d55a0259f7b7a272cb25232f0d29a57ee2b699
         with:
           fail_ci_if_error: true
