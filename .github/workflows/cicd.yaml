@@ -280,7 +280,7 @@ jobs:
 
       - name: Install coveragepy
         run: |
-          pip install -r requirements-coveragepy.txt
+          pip install --require-hashes -r requirements-coveragepy.txt
 
       - uses: alire-project/gnatcov-to-codecovio-action@54d55a0259f7b7a272cb25232f0d29a57ee2b699
         with:
@@ -463,8 +463,8 @@ jobs:
 
       - name: Install shpinx with extensions
         run: |
-          pip install -r requirements-sphinx.txt
-          pip install git+https://github.com/AdaCore/sphinxcontrib-adadomain@b5f538f52631f0b71a901e4bf4b7829eb2a07bbb
+          pip install --require-hashes -r requirements-sphinx.txt
+          pip install --require-hashes git+https://github.com/AdaCore/sphinxcontrib-adadomain@b5f538f52631f0b71a901e4bf4b7829eb2a07bbb
 
       - name: rst to ${{ matrix.format }}
         id: rst_to
