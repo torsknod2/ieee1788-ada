@@ -79,7 +79,12 @@ parser.add_argument(
     help="Logging level (DEBUG, INFO, WARNING, ERROR, CRITICAL or integer)",
     type=parse_log_level,
 )
-args = parser.parse_args()
+parser.add_argument(
+    "--force-version",
+    help="Force to set a specific semantic version",
+    type=semver.Version.parse,
+)
+args: argparse.Namespace = parser.parse_args()
 
 logging.basicConfig(level=args.log_level)
 
@@ -128,6 +133,15 @@ logging.info("Build=%i", build)
 if build > 0:
     version = version.replace(prerelease="dev", build=build)
 logging.info("Calculated Version=%s", version)
+
+if args.force_version:
+    if version != args.force_version:
+        logging.warning(
+            "Forced version %s != calculated version %s",
+            args.force_version,
+            version,
+        )
+    version = args.force_version
 
 SUCCESS: bool = True
 for toml_file in args.files:

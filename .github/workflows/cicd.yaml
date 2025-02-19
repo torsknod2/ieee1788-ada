@@ -73,18 +73,10 @@ jobs:
           fetch-tags: true
           filter: tree:0
 
-      - name: Setup Python
-        uses: actions/setup-python@42375524e23c412d93fb67b49958b491fce71c38
-        with:
-          cache: pip
-
-      - name: Install pre-commit
-        run: pip install pre-commit==4.1.0
-
-      - run: git log --no-merges
-
       - name: Run pre-commit
-        run: pre-commit run --all-files --show-diff-on-failure
+        uses: pre-commit/action@2c7b3805fd2a0fd8c1884dcaebf91fc102a13ecd
+        with:
+          extra_args: --all-files --show-diff-on-failure
 
   GNATprove:
     runs-on: ubuntu-24.04
@@ -286,9 +278,6 @@ jobs:
         with:
           cache: pip
 
-      - name: Install coveragepy
-        run: pip install coveragepy==1.6.0
-
       - uses: alire-project/gnatcov-to-codecovio-action@54d55a0259f7b7a272cb25232f0d29a57ee2b699
         with:
           fail_ci_if_error: true
@@ -296,6 +285,7 @@ jobs:
           verbose: true
 
   WaitForSuccessfulScoreCardAnalysis:
+    needs: [pre-commit, GNATprove, Test, FlawFinder]
     runs-on: ubuntu-24.04
     steps:
       - name: Harden the runner (Audit all outbound calls)
@@ -312,14 +302,7 @@ jobs:
           allowed-conclusions: success
 
   Publish:
-    needs:
-      [
-        pre-commit,
-        GNATprove,
-        Test,
-        FlawFinder,
-        WaitForSuccessfulScoreCardAnalysis,
-      ]
+    needs: [WaitForSuccessfulScoreCardAnalysis]
     runs-on: ubuntu-24.04
     steps:
       - name: Harden Runner
@@ -474,8 +457,10 @@ jobs:
         with:
           cache: pip
 
-      - name: Install docutils and sphinxcontrib-adadomain
-        run: pip install -U docutils==0.21.2 git+https://github.com/AdaCore/sphinxcontrib-adadomain
+      - name: Install shpinx with extensions
+        run: |
+          pip install --require-hashes -r requirements-sphinx.txt
+          pip install --require-hashes git+https://github.com/AdaCore/sphinxcontrib-adadomain@b5f538f52631f0b71a901e4bf4b7829eb2a07bbb
 
       - name: rst to ${{ matrix.format }}
         id: rst_to
