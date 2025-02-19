@@ -1,0 +1,1 @@
+coveragepy==1.6.0 --hash=sha256:a2a29ec8ee985a5ea27dcc3aa3230bacb6593f38ed102cc6aadf00da74be2de6 --hash=sha256:37a955c9e95da9a6b5c8ae445eb60856e9e631a07528547ff0e45aadb701d925
