@@ -280,8 +280,7 @@ jobs:
 
       - name: Install coveragepy
         run: |
-          pip install \
-          'coveragepy==1.6.0 --hash=sha256:a2a29ec8ee985a5ea27dcc3aa3230bacb6593f38ed102cc6aadf00da74be2de6 --hash=sha256:37a955c9e95da9a6b5c8ae445eb60856e9e631a07528547ff0e45aadb701d925'
+          pip install -r requirements-coveragepy.txt
 
       - uses: alire-project/gnatcov-to-codecovio-action@54d55a0259f7b7a272cb25232f0d29a57ee2b699
         with:
@@ -462,11 +461,10 @@ jobs:
         with:
           cache: pip
 
-      - name: Install docutils and sphinxcontrib-adadomain
+      - name: Install shpinx with extensions
         run: |
-          pip install \
-          'docutils==0.21.2 --hash=sha256:3a6b18732edf182daa3cd12775bbb338cf5691468f91eeeb109deff6ebfa986f --hash=sha256:dafca5b9e384f0e419294eb4d2ff9fa826435bf15f15b7bd45723e8ad76811b2' \
-          git+https://github.com/AdaCore/sphinxcontrib-adadomain@b5f538f52631f0b71a901e4bf4b7829eb2a07bbb
+          pip install -r requirements-sphinx.txt
+          pip install git+https://github.com/AdaCore/sphinxcontrib-adadomain@b5f538f52631f0b71a901e4bf4b7829eb2a07bbb
 
       - name: rst to ${{ matrix.format }}
         id: rst_to
