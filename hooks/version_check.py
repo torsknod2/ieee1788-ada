@@ -82,7 +82,7 @@ parser.add_argument(
 parser.add_argument(
     "--force-version",
     help="Force to set a specific semantic version",
-    type=semver.Version.parse,
+    type=semver.version.Version.parse,
 )
 args: argparse.Namespace = parser.parse_args()
 
@@ -91,7 +91,7 @@ logging.basicConfig(level=args.log_level)
 version: semver.Version
 COUNT: int
 try:
-    version = semver.Version.parse(
+    version = semver.version.Version.parse(
         (
             subprocess.check_output(
                 ["git", "describe", "--tags", "--abbrev=0"], shell=False
@@ -109,7 +109,7 @@ try:
         .strip()
     )
 except (subprocess.CalledProcessError, ValueError, TypeError):
-    version = semver.Version.parse("0.0.1")
+    version = semver.version.Version.parse("0.0.1")
     COUNT = int(
         subprocess.check_output(
             ["git", "rev-list", "HEAD", "--count", "--no-merges"], shell=False
@@ -130,6 +130,39 @@ logging.info("Clean=%r", clean)
 build: int = COUNT + (0 if clean else 1)
 logging.info("Build=%i", build)
 
+
+base_branch: str = (
+    subprocess.check_output(["git", "rev-parse", "--abbrev-ref", "HEAD"], shell=False)
+    .decode()
+    .strip()
+)
+
+merge_base: str = (
+    subprocess.check_output(["git", "merge-base", "HEAD", "origin/main"], shell=False)
+    .decode()
+    .strip()
+)
+
+BASE_VERSION: semver.version.Version | None
+if merge_base:
+    base_version_str: str = (
+        subprocess.check_output(
+            ["git", "show", f"{merge_base}:alire.toml"], shell=False
+        )
+        .decode()
+        .strip()
+    )
+
+    base_data = tomlkit.loads(base_version_str)
+
+    BASE_VERSION: semver.version.Version = semver.version.Version.parse(
+        str(base_data["version"])
+    )
+else:
+    BASE_VERSION = None
+
+logging.info("Base Version=%s", BASE_VERSION)
+
 if build > 0:
     version = version.replace(prerelease="dev", build=build)
 logging.info("Calculated Version=%s", version)
@@ -143,32 +176,45 @@ if args.force_version:
         )
     version = args.force_version
 
+if version <= BASE_VERSION:
+    logging.error(
+        "The version %s we will propose will not be greater than the base version %s",
+        version,
+        BASE_VERSION,
+    )
+
 SUCCESS: bool = True
 for toml_file in args.files:
     logging.info("Processing: %r", toml_file)
     with open(toml_file, encoding="US-ASCII") as f:
         data: tomlkit.TOMLDocument = tomlkit.load(f)
 
-    if "version" in data:
+    old_version: semver.version.Version | None = (
+        semver.version.Version.parse(data["version"]) if "version" in data else None
+    )
+
+    if version:
+        if BASE_VERSION and version <= BASE_VERSION:
+            logging.error(
+                "The version %s we will propose will not be greater than the base version %s",
+                version,
+                BASE_VERSION,
+            )
         logging.log(
             (
                 logging.ERROR
-                if str(data["version"]) < str(version)
-                else (
-                    logging.INFO
-                    if data["version"] == str(version)
-                    else (logging.WARNING)
-                )
+                if old_version < version
+                else (logging.INFO if old_version == version else (logging.WARNING))
             ),
             "%s%s%s",
-            data["version"],
-            " == " if data["version"] == str(version) else " != ",
+            old_version,
+            " == " if old_version == version else " != ",
             version,
         )
-        if data["version"] != str(version):
-            data["version"] = str(version)
-            with open(toml_file, mode="w", encoding="US-ASCII") as f:
-                tomlkit.dump(data, f)
-            SUCCESS = False
+    if not version or old_version != version:
+        data["version"] = str(version)
+        with open(toml_file, mode="w", encoding="US-ASCII") as f:
+            tomlkit.dump(data, f)
+        SUCCESS = False
 
 sys.exit(0 if SUCCESS else 1)
