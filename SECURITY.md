@@ -15,7 +15,7 @@ currently being supported with security updates.
 
 ## Reporting a Vulnerability
 
-Vulnerabilities may be reported via https://github.com/torsknod2/ieee1788-ada/security/advisories/new.
+Vulnerabilities may be reported via <https://github.com/torsknod2/ieee1788-ada/security/advisories/new>.
 
 Tell them where to go, how often they can expect to get an update on a
 reported vulnerability, what to expect if the vulnerability is accepted or
