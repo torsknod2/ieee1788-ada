@@ -113,4 +113,5 @@
     "autoDocstring.includeName": true,
     "restructuredtext.experimental": true,
     "testExplorer.showOnRun": true,
+    "github.copilot.chat.localeOverride": "en",
 }

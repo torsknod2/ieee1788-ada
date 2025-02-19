@@ -187,6 +187,64 @@ jobs:
             !alire_install
             !alire_prefix
 
+  PublishAUnitXMLToCodeCovIO:
+    needs: [Test]
+    runs-on: ubuntu-24.04
+    permissions:
+      contents: read
+    steps:
+      - name: Harden Runner
+        uses: step-security/harden-runner@4d991eb9b905ef189e4c376166672c3f2f230481 # v2.11.0
+        with:
+          disable-sudo: true
+          egress-policy: block
+          allowed-endpoints: >
+            api.github.com:443
+            cli.codecov.io:443
+            codecov.io:443
+            files.pythonhosted.org:443
+            pypi.org:443
+            storage.googleapis.com:443
+            uploader.codecov.io:443
+
+      - name: Download Coverage Artifact
+        uses: actions/download-artifact@fa0a91b85d4f404e444e00e005971372dc801d16
+        with:
+          name: aunit_results.xml
+
+      - uses: codecov/test-results-action@5c441a7bcc06f8706cde90192857d337c5dab8a6
+        with:
+          files: aunit_results.xml
+          fail_ci_if_error: true
+          token: ${{ secrets.CODECOV_TOKEN }}
+
+  PRCommentAUnitXML:
+    needs: [Test]
+    runs-on: ubuntu-24.04
+    permissions:
+      contents: read
+    steps:
+      - name: Harden Runner
+        uses: step-security/harden-runner@4d991eb9b905ef189e4c376166672c3f2f230481 # v2.11.0
+        with:
+          disable-sudo: true
+          egress-policy: block
+          allowed-endpoints: >
+            api.github.com:443
+            files.pythonhosted.org:443
+            pypi.org:443
+            storage.googleapis.com:443
+
+      - name: Download Coverage Artifact
+        uses: actions/download-artifact@fa0a91b85d4f404e444e00e005971372dc801d16
+        with:
+          name: aunit_results.xml
+
+      - uses: codecov/basic-test-results@c46ff461955b5cd6eb57cbe9ff22f3b77fc15824
+        with:
+          file: aunit_results.xml
+          github-token: ${{ secrets.GITHUB_TOKEN }}
+
   UploadCodeCoverage:
     needs: [Test]
     runs-on: ubuntu-24.04
@@ -273,16 +331,10 @@ jobs:
         with:
           name: gnatcov_stmt+mcdc_xcov+
 
-      - name: Setup Python
-        uses: actions/setup-python@42375524e23c412d93fb67b49958b491fce71c38
-        with:
-          cache: pip
-
       - uses: alire-project/gnatcov-to-codecovio-action@54d55a0259f7b7a272cb25232f0d29a57ee2b699
         with:
           fail_ci_if_error: true
           token: ${{ secrets.CODECOV_TOKEN }}
-          verbose: true
 
   WaitForSuccessfulScoreCardAnalysis:
     needs: [pre-commit, GNATprove, Test, FlawFinder]

@@ -1,0 +1,111 @@
+name: Auto Project Assignment
+
+on: [issues, pull_request, workflow_dispatch]
+
+permissions: {}
+
+jobs:
+  add-all-to-project:
+    if: github.event_name == 'workflow_dispatch' && github.repository_owner == github.actor
+    permissions:
+      contents: read
+      issues: write
+      pull-requests: write
+      repository-projects: write
+
+    runs-on: ubuntu-24.04
+    steps:
+      - name: Harden Runner
+        uses: step-security/harden-runner@4d991eb9b905ef189e4c376166672c3f2f230481 # v2.11.0
+        with:
+          disable-sudo: true
+          egress-policy: block
+          allowed-endpoints: >
+            api.github.com:443
+            github.com:443
+
+      - name: Process all existing items
+        uses: actions/github-script@60a0d83039c74a4aee543508d2ffcb1c3799cdea
+        with:
+          github-token: ${{ secrets.ADD_TO_PROJECT_TOKEN }}
+          script: |
+            const FETCH_ITEMS = `query($searchQuery: String!, $cursor: String) {
+              search(query: $searchQuery, type: ISSUE, first: 100, after: $cursor) {
+                pageInfo {
+                  hasNextPage
+                  endCursor
+                }
+                nodes {
+                  ... on Issue {
+                    id
+                    number
+                  }
+                  ... on PullRequest {
+                    id
+                    number
+                  }
+                }
+              }
+            }`;
+
+            const ADD_TO_PROJECT = `mutation($projectId: ID!, $contentId: ID!) {
+              addProjectV2ItemById(input: {projectId: $projectId, contentId: $contentId}) {
+                item { id }
+              }
+            }`;
+
+            const projectId = 'PVT_kwHOC26JW84AyjMX';
+            const allPromises = [];
+            let cursor = null;
+            const searchQuery = `repo:${context.repo.owner}/${context.repo.repo}`;
+
+            do {
+              const fetchPromise = github.graphql(FETCH_ITEMS, {
+                searchQuery,
+                cursor
+              });
+
+              allPromises.push(
+                fetchPromise.then(result => {
+                  cursor = result.search.pageInfo.hasNextPage
+                    ? result.search.pageInfo.endCursor
+                    : null;
+
+                  return Promise.all(
+                    result.search.nodes.map(item =>
+                      github.graphql(ADD_TO_PROJECT, {
+                        projectId,
+                        contentId: item.id
+                      })
+                    )
+                  );
+                })
+              );
+            } while (cursor);
+
+            await Promise.all(allPromises);
+
+  add-to-project:
+    if: ${{ github.event_name == 'issues' || github.event_name == 'pull_request' }}
+    permissions:
+      contents: read
+      issues: write
+      pull-requests: write
+      repository-projects: write
+
+    runs-on: ubuntu-24.04
+    steps:
+      - name: Harden Runner
+        uses: step-security/harden-runner@4d991eb9b905ef189e4c376166672c3f2f230481 # v2.11.0
+        with:
+          disable-sudo: true
+          egress-policy: block
+          allowed-endpoints: >
+            api.github.com:443
+            github.com:443
+
+      - name: Add issue/PR to project
+        uses: actions/add-to-project@244f685bbc3b7adfa8466e08b698b5577571133e
+        with:
+          project-url: https://github.com/users/torsknod2/projects/3
+          github-token: ${{ secrets.ADD_TO_PROJECT_TOKEN }}
