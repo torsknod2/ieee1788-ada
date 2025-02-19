@@ -34,15 +34,33 @@
 --  any license terms which apply to the Application, with which you must
 --  still comply.
 
-with AUnit.Simple_Test_Cases;
+with AUnit.Assertions;
+with Ieee1788.Implementation;
 
-generic
-   type G is delta <>;
-package To_Interval_Test is
-   type Test is new AUnit.Simple_Test_Cases.Test_Case with null record;
-   type Test_Access is access all Test;
+package body Ieee1788.Tests.To_Interval_Test is
+   package Ieee1788_Instance is new Ieee1788.Implementation (G);
+   function Name (T : Test) return AUnit.Message_String is
+      pragma Unreferenced (T);
+   begin
+      return AUnit.Format ("Test IEEE 1788 To_Interval function");
+   end Name;
 
-   function Name (T : Test) return AUnit.Message_String;
-
-   procedure Run_Test (T : in out Test);
-end To_Interval_Test;
+   procedure Run_Test (T : in out Test) is
+      pragma Unreferenced (T);
+   begin
+      AUnit.Assertions.Assert
+        (Ieee1788_Instance.To_String (Ieee1788_Instance.To_Interval (G'First)),
+         "[" & G'Image (G'First) & "," & G'Image (G'First) & "]",
+         "Test Low");
+      if G'First < 0.0 and G'Last > 0.0 then
+         AUnit.Assertions.Assert
+           (Ieee1788_Instance.To_String (Ieee1788_Instance.To_Interval (0.0)),
+            "[" & G'Image (0.0) & "," & G'Image (0.0) & "]",
+            "Test High");
+      end if;
+      AUnit.Assertions.Assert
+        (Ieee1788_Instance.To_String (Ieee1788_Instance.To_Interval (G'Last)),
+         "[" & G'Image (G'Last) & "," & G'Image (G'Last) & "]",
+         "Test High");
+   end Run_Test;
+end Ieee1788.Tests.To_Interval_Test;

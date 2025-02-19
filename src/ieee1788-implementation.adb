@@ -41,7 +41,7 @@
 --  @see https://standards.ieee.org/ieee/1788.1/6074/
 --
 
-package body Ieee1788 is
+package body Ieee1788.Implementation is
 
    --  Returns an interval containing all representable values of type T
    --  Creates an interval spanning the entire range of type T
@@ -80,8 +80,11 @@ package body Ieee1788 is
    function To_String (Right : Interval) return String is
    begin
       return
-        "[" & T'Image (Right.Lower_Bound) & "," & T'Image (Right.Upper_Bound) &
-        "]";
+        "["
+        & T'Image (Right.Lower_Bound)
+        & ","
+        & T'Image (Right.Upper_Bound)
+        & "]";
    end To_String;
 
    --  Creates the smallest interval containing two given values
@@ -155,8 +158,8 @@ package body Ieee1788 is
    function "=" (Left, Right : Interval) return Boolean is
    begin
       return
-        Left.Lower_Bound = Right.Lower_Bound and
-        Left.Upper_Bound = Right.Upper_Bound;
+        Left.Lower_Bound = Right.Lower_Bound
+        and Left.Upper_Bound = Right.Upper_Bound;
    end "=";
 
    --  Tests if one interval is strictly less than another
@@ -335,15 +338,14 @@ package body Ieee1788 is
               Left.Upper_Bound * Right.Upper_Bound);
       end MulPP;
       Table :
-        constant array
-          (Sign,
-           Sign) of access function (Left, Right : Interval) return Interval :=
-        [[MulNN'Access, MulNM'Access, MulNP'Access],
-        [MulMN'Access, MulMM'Access, MulMP'Access],
-        [MulPN'Access, MulPM'Access, MulPP'Access]];
+        constant array (Sign, Sign)
+        of access function (Left, Right : Interval) return Interval :=
+          [[MulNN'Access, MulNM'Access, MulNP'Access],
+           [MulMN'Access, MulMM'Access, MulMP'Access],
+           [MulPN'Access, MulPM'Access, MulPP'Access]];
       Signs : constant array (1 .. 2, 1 .. 2) of Sign :=
         [[Sign (Left.Lower_Bound), Sign (Left.Upper_Bound)],
-        [Sign (Right.Lower_Bound), Sign (Right.Upper_Bound)]];
+         [Sign (Right.Lower_Bound), Sign (Right.Upper_Bound)]];
    begin
       return
         Table
@@ -351,7 +353,7 @@ package body Ieee1788 is
             else (if Signs (2, 1) >= 0 then 1 else 0)),
            (if Signs (1, 2) <= 0 then -1
             else (if Signs (1, 1) >= 0 then 1 else 0)))
-          (Left, Right);
+             (Left, Right);
    end "*";
 
    --  Divides two intervals
@@ -432,15 +434,14 @@ package body Ieee1788 is
               Left.Upper_Bound * Right.Lower_Bound);
       end DivPP;
       Table :
-        constant array
-          (Sign,
-           Sign) of access function (Left, Right : Interval) return Interval :=
-        [[DivNN'Access, DivNM'Access, DivNP'Access],
-        [DivMN'Access, DivMM'Access, DivMP'Access],
-        [DivPN'Access, DivPM'Access, DivPP'Access]];
+        constant array (Sign, Sign)
+        of access function (Left, Right : Interval) return Interval :=
+          [[DivNN'Access, DivNM'Access, DivNP'Access],
+           [DivMN'Access, DivMM'Access, DivMP'Access],
+           [DivPN'Access, DivPM'Access, DivPP'Access]];
       Signs : constant array (1 .. 2, 1 .. 2) of Sign :=
         [[Sign (Left.Lower_Bound), Sign (Left.Upper_Bound)],
-        [Sign (Right.Lower_Bound), Sign (Right.Upper_Bound)]];
+         [Sign (Right.Lower_Bound), Sign (Right.Upper_Bound)]];
    begin
       --- FIXME https://www.math.kit.edu/ianm2/~kulisch/media/compl1788.pdf p.8
       return
@@ -449,7 +450,7 @@ package body Ieee1788 is
             else (if Signs (2, 1) >= 0 then 1 else 0)),
            (if Signs (1, 2) <= 0 then -1
             else (if Signs (1, 1) >= 0 then 1 else 0)))
-          (Left, Right);
+             (Left, Right);
    end "/";
 
    --  Returns the absolute value of an interval
@@ -494,4 +495,4 @@ package body Ieee1788 is
       return (if Left > Right then Left else Right);
    end Max;
 
-end Ieee1788;
+end Ieee1788.Implementation;

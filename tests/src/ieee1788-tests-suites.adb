@@ -34,17 +34,18 @@
 --  any license terms which apply to the Application, with which you must
 --  still comply.
 
---  @summary
---  A native Ada implementation of IEEE 1788 interval arithmetic.
---
---  @description
---  This library implements the IEEE 1788.1 specification for interval
---  arithmetic. It provides basic arithmetic operations and comparisons
---  for intervals.
---
---  @see https://standards.ieee.org/ieee/1788/4431/
---  @see https://standards.ieee.org/ieee/1788.1/6074/
+with Ieee1788.Tests.Suites.Generic_Suite;
 
-package Ieee1788 is
-   pragma Pure;
-end Ieee1788;
+package body Ieee1788.Tests.Suites is
+   type Integer_Unsigned_Zero is delta 1.0 range 0.0 .. 0.0;
+   package Integer_Unsigned_Zero_Suite is new
+     Ieee1788.Tests.Suites.Generic_Suite (G => Integer_Unsigned_Zero);
+
+   function Master_Suite return AUnit.Test_Suites.Access_Test_Suite is
+      Result : constant AUnit.Test_Suites.Access_Test_Suite :=
+        AUnit.Test_Suites.New_Suite;
+   begin
+      Result.Add_Test (Integer_Unsigned_Zero_Suite.Suite);
+      return Result;
+   end Master_Suite;
+end Ieee1788.Tests.Suites;

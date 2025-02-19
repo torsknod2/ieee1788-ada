@@ -38,7 +38,7 @@ project IEEE1788_Tests is
    for Object_Dir use "obj/" & IEEE1788_Tests_Config.Build_Profile;
    for Create_Missing_Dirs use "True";
    for Exec_Dir use "bin";
-   for Main use ("ieee1788_tests.adb");
+   for Main use ("ieee1788-tests-main.adb");
 
    package Compiler is
       for Default_Switches ("Ada") use IEEE1788_Tests_Config.Ada_Compiler_Switches;

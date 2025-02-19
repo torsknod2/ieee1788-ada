@@ -114,4 +114,5 @@
     "restructuredtext.experimental": true,
     "testExplorer.showOnRun": true,
     "github.copilot.chat.localeOverride": "en",
+    "sarif-viewer.connectToGithubCodeScanning": "on",
 }
