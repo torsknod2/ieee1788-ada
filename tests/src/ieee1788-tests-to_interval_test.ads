@@ -45,7 +45,6 @@ package Ieee1788.Tests.To_Interval_Test is
    function Suite return AUnit.Test_Suites.Access_Test_Suite;
 
 private
-   -- Individual test cases
    procedure Test_First (T : in out Test_Suite);
    procedure Test_Last (T : in out Test_Suite);
    procedure Test_Zero (T : in out Test_Suite);
