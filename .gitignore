@@ -40,3 +40,4 @@ lib/
 *.o
 obj/
 *.srctrace
+*.trace
