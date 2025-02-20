@@ -37,7 +37,7 @@
 with AUnit.Test_Suites;
 
 generic
-   type G is delta <> ;
+   type G is delta <>;
 package Ieee1788.Tests.Suites.Generic_Suite is
    function Suite return AUnit.Test_Suites.Access_Test_Suite;
 end Ieee1788.Tests.Suites.Generic_Suite;

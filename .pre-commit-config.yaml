@@ -33,7 +33,7 @@
 
 repos:
 - repo: https://github.com/gitleaks/gitleaks
-  rev: v8.23.3
+  rev: v8.24.0
   hooks:
   - id: gitleaks
 
@@ -68,7 +68,46 @@ repos:
   rev: v1.5.5
   hooks:
   - id: remove-crlf
-#  - id: forbid-tabs
+  - id: forbid-tabs
+    exclude: ^\.vscode/
+  # - id: insert-license
+  #   name: Check license headers
+  #   files: \.(adb|ads|adc|gpr|py|yaml|yml|sh|toml|txt)$|CODEOWNERS|\.gitconfig$
+  #   args:
+  #     - --license-filepath
+  #     - LICENSE.md
+  #     - --comment-style
+  #     - "--  "
+  #     - --comment-style
+  #     - "#"
+  #     - --comment-style
+  #     - "||"
+  #     - --comment-style
+  #     - '"""||"""'
+
+- repo: https://github.com/python-jsonschema/check-jsonschema
+  rev: 0.31.2
+  hooks:
+    - id: check-github-workflows
+    - id: check-dependabot
+
+- repo: https://github.com/pycqa/isort
+  rev: 6.0.0
+  hooks:
+    - id: isort
+      name: Sort Python imports
+
+- repo: https://github.com/pre-commit/mirrors-mypy
+  rev: v1.15.0
+  hooks:
+    - id: mypy
+      additional_dependencies: ['semver', 'tomlkit']
+
+- repo: https://github.com/pylint-dev/pylint
+  rev: v3.3.4
+  hooks:
+  - id: pylint
+    additional_dependencies: ['semver', 'tomlkit']
 
 - repo: local
   hooks:
@@ -81,8 +120,23 @@ repos:
       pass_filenames: true
       always_run: true
 
-- repo: https://github.com/pylint-dev/pylint
-  rev: v3.3.4
-  hooks:
-  - id: pylint
-    additional_dependencies: ['semver', 'tomlkit']
+    - id: gnatpp-implementation
+      name: Format Ada files of the implementation
+      entry: bash -c 'cd "$(git rev-parse --show-toplevel)" && alr exec -P1 gnatpp -- -U -j0 --wide-character-encoding=8 "$@"'
+      language: system
+      files: ^(src/.*\.(adb|ads)|.*\.gpr)$
+      pass_filenames: true
+
+    - id: gnatpp-tests
+      name: Format Ada files of the tests
+      entry: bash -c 'cd "$(git rev-parse --show-toplevel)" && alr --chdir=tests exec -P1 gnatpp -- -U -j0 --wide-character-encoding=8 "$@"'
+      language: system
+      files: ^tests/(src/.*\.(adb|ads)|.*\.gpr)$
+      pass_filenames: true
+
+    - id: unit-tests
+      name: Execute unit tests
+      entry: bash -c 'cd "$(git rev-parse --show-toplevel)" && alr --chdir=tests run'
+      language: system
+      files: \.(gpr|adb|ads)$
+      pass_filenames: false

@@ -155,9 +155,7 @@ if merge_base:
 
     base_data = tomlkit.loads(base_version_str)
 
-    BASE_VERSION: semver.version.Version = semver.version.Version.parse(
-        str(base_data["version"])
-    )
+    BASE_VERSION = semver.version.Version.parse(str(base_data["version"]))
 else:
     BASE_VERSION = None
 
@@ -176,7 +174,7 @@ if args.force_version:
         )
     version = args.force_version
 
-if version <= BASE_VERSION:
+if BASE_VERSION and version <= BASE_VERSION:
     logging.error(
         "The version %s we will propose will not be greater than the base version %s",
         version,
@@ -189,6 +187,7 @@ for toml_file in args.files:
     with open(toml_file, encoding="US-ASCII") as f:
         data: tomlkit.TOMLDocument = tomlkit.load(f)
 
+    assert isinstance(data["version"], str)
     old_version: semver.version.Version | None = (
         semver.version.Version.parse(data["version"]) if "version" in data else None
     )
@@ -200,18 +199,19 @@ for toml_file in args.files:
                 version,
                 BASE_VERSION,
             )
-        logging.log(
-            (
-                logging.ERROR
-                if old_version < version
-                else (logging.INFO if old_version == version else (logging.WARNING))
-            ),
-            "%s%s%s",
-            old_version,
-            " == " if old_version == version else " != ",
-            version,
-        )
-    if not version or old_version != version:
+        if old_version:
+            logging.log(
+                (
+                    logging.ERROR
+                    if old_version < version
+                    else (logging.INFO if old_version == version else (logging.WARNING))
+                ),
+                "%s%s%s",
+                old_version,
+                " == " if old_version == version else " != ",
+                version,
+            )
+    if version and (not old_version or old_version != version):
         data["version"] = str(version)
         with open(toml_file, mode="w", encoding="US-ASCII") as f:
             tomlkit.dump(data, f)

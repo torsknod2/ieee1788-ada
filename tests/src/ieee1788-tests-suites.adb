@@ -38,8 +38,9 @@ with Ieee1788.Tests.Suites.Generic_Suite;
 
 package body Ieee1788.Tests.Suites is
    type Integer_Unsigned_Zero is delta 1.0 range 0.0 .. 0.0;
-   package Integer_Unsigned_Zero_Suite is new
-     Ieee1788.Tests.Suites.Generic_Suite (G => Integer_Unsigned_Zero);
+   package Integer_Unsigned_Zero_Suite is new Ieee1788.Tests.Suites
+     .Generic_Suite
+     (G => Integer_Unsigned_Zero);
 
    function Master_Suite return AUnit.Test_Suites.Access_Test_Suite is
       Result : constant AUnit.Test_Suites.Access_Test_Suite :=

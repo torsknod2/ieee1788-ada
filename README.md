@@ -59,7 +59,7 @@ Building and testing requires the following tools to be installed:
 
 ```bash
 # Install toolchain via Alire
-alr install gnat_native gprbuild gnatcov gnatformat gnatprove
+alr install libadalang_tools gnat_native gprbuild gnatcov gnatformat gnatprove
 
 # Validation Build
 alr build --validation

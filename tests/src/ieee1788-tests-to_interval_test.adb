@@ -35,32 +35,66 @@
 --  still comply.
 
 with AUnit.Assertions;
+with AUnit.Test_Caller;
 with Ieee1788.Implementation;
 
 package body Ieee1788.Tests.To_Interval_Test is
-   package Ieee1788_Instance is new Ieee1788.Implementation (G);
-   function Name (T : Test) return AUnit.Message_String is
-      pragma Unreferenced (T);
-   begin
-      return AUnit.Format ("Test IEEE 1788 To_Interval function");
-   end Name;
+   package Ieee1788_Instance is new Ieee1788.Implementation (T => G);
 
-   procedure Run_Test (T : in out Test) is
+   package Test_Caller is new AUnit.Test_Caller (Test_Suite);
+
+   procedure Test_First (T : in out Test_Suite) is
       pragma Unreferenced (T);
    begin
       AUnit.Assertions.Assert
-        (Ieee1788_Instance.To_String (Ieee1788_Instance.To_Interval (G'First)),
+        (Ieee1788_Instance.To_String
+           (Ieee1788_Instance.To_Interval (G'First)) =
          "[" & G'Image (G'First) & "," & G'Image (G'First) & "]",
-         "Test Low");
-      if G'First < 0.0 and G'Last > 0.0 then
-         AUnit.Assertions.Assert
-           (Ieee1788_Instance.To_String (Ieee1788_Instance.To_Interval (0.0)),
-            "[" & G'Image (0.0) & "," & G'Image (0.0) & "]",
-            "Test High");
-      end if;
+         "Test First value");
+   end Test_First;
+
+   procedure Test_Last (T : in out Test_Suite) is
+      pragma Unreferenced (T);
+   begin
       AUnit.Assertions.Assert
-        (Ieee1788_Instance.To_String (Ieee1788_Instance.To_Interval (G'Last)),
+        (Ieee1788_Instance.To_String (Ieee1788_Instance.To_Interval (G'Last)) =
          "[" & G'Image (G'Last) & "," & G'Image (G'Last) & "]",
-         "Test High");
-   end Run_Test;
+         "Test Last value");
+   end Test_Last;
+
+   procedure Test_Zero (T : in out Test_Suite) is
+      pragma Unreferenced (T);
+   begin
+      AUnit.Assertions.Assert
+        (Ieee1788_Instance.To_String (Ieee1788_Instance.To_Interval (0.0)) =
+         "[0.0,0.0]",
+         "Test Zero value");
+   end Test_Zero;
+
+   procedure Test_Range (T : in out Test_Suite) is
+      pragma Unreferenced (T);
+   begin
+      AUnit.Assertions.Assert
+        (Ieee1788_Instance.To_String
+           (Ieee1788_Instance.To_Interval (G'First, G'Last)) =
+         "[" & G'Image (G'First) & "," & G'Image (G'Last) & "]",
+         "Test Range value");
+   end Test_Range;
+
+   function Suite return AUnit.Test_Suites.Access_Test_Suite is
+      Result : constant AUnit.Test_Suites.Access_Test_Suite :=
+        AUnit.Test_Suites.New_Suite;
+   begin
+      Result.Add_Test
+        (Test_Caller.Create
+           ("Test To_Interval First value", Test_First'Access));
+      Result.Add_Test
+        (Test_Caller.Create ("Test To_Interval Last value", Test_Last'Access));
+      Result.Add_Test
+        (Test_Caller.Create ("Test To_Interval Zero value", Test_Zero'Access));
+      Result.Add_Test
+        (Test_Caller.Create
+           ("Test To_Interval Range value", Test_Range'Access));
+      return Result;
+   end Suite;
 end Ieee1788.Tests.To_Interval_Test;

@@ -34,15 +34,20 @@
 --  any license terms which apply to the Application, with which you must
 --  still comply.
 
-with AUnit.Simple_Test_Cases;
+with AUnit.Test_Suites;
+with AUnit.Test_Fixtures;
 
 generic
-   type G is delta <> ;
+   type G is delta <>;
 package Ieee1788.Tests.To_Interval_Test is
-   type Test is new AUnit.Simple_Test_Cases.Test_Case with null record;
-   type Test_Access is access all Test;
+   type Test_Suite is new AUnit.Test_Fixtures.Test_Fixture with null record;
 
-   function Name (T : Test) return AUnit.Message_String;
+   function Suite return AUnit.Test_Suites.Access_Test_Suite;
 
-   procedure Run_Test (T : in out Test);
+private
+   -- Individual test cases
+   procedure Test_First (T : in out Test_Suite);
+   procedure Test_Last (T : in out Test_Suite);
+   procedure Test_Zero (T : in out Test_Suite);
+   procedure Test_Range (T : in out Test_Suite);
 end Ieee1788.Tests.To_Interval_Test;

@@ -41,7 +41,8 @@ with AUnit.Reporter.XML;
 with Ieee1788.Tests.Suites;
 
 procedure Ieee1788.Tests.Main is
-   procedure Run is new AUnit.Run.Test_Runner (Suites.Master_Suite);
+   procedure Run is new AUnit.Run.Test_Runner
+     (Ieee1788.Tests.Suites.Master_Suite);
    Reporter_File : aliased Ada.Text_IO.File_Type;
    Reporter      : AUnit.Reporter.XML.XML_Reporter;
    procedure Finally;

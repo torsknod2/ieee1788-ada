@@ -37,16 +37,14 @@
 with Ieee1788.Tests.To_Interval_Test;
 
 package body Ieee1788.Tests.Suites.Generic_Suite is
-   package To_Interval_Test_Instance is new
-     Ieee1788.Tests.To_Interval_Test (G => G);
+   package To_Interval_Test_Instance is new Ieee1788.Tests.To_Interval_Test
+     (G => G);
 
    function Suite return AUnit.Test_Suites.Access_Test_Suite is
-      Result           : constant AUnit.Test_Suites.Access_Test_Suite :=
+      Result : constant AUnit.Test_Suites.Access_Test_Suite :=
         new AUnit.Test_Suites.Test_Suite;
-      To_Interval_Test : constant To_Interval_Test_Instance.Test_Access :=
-        new To_Interval_Test_Instance.Test;
    begin
-      Result.Add_Test (To_Interval_Test);
+      Result.Add_Test (To_Interval_Test_Instance.Suite);
       return Result;
    end Suite;
 end Ieee1788.Tests.Suites.Generic_Suite;
