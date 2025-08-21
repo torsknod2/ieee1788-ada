@@ -5,12 +5,13 @@ bash commands.
 
 ## Required Reading
 
-For general project information, build instructions, and contribution guidelines,
-refer to:
+For general project information, build instructions, and contribution
+guidelines, refer to:
 
-- [README.md](../README.md) - Project overview, build instructions, toolchain setup
-- [CONTRIBUTING.md](../CONTRIBUTING.md) - Contribution guidelines and development
-  process
+- [README.md](../README.md) - Project overview, build instructions, toolchain
+  setup
+- [CONTRIBUTING.md](../CONTRIBUTING.md) - Contribution guidelines and
+  development process
 - [.github/workflows/cicd.yaml](workflows/cicd.yaml) - Complete CI/CD workflow
   with verified commands
 
@@ -25,7 +26,8 @@ export PATH=$PATH:/home/runner/.alire/bin
 
 ### Critical Timing and Automation Warnings
 
-- **Toolchain installation**: Typically takes 15-30 seconds (may vary by system configuration and network speed) - **NEVER CANCEL**
+- **Toolchain installation**: Typically takes 15-30 seconds (may vary by system
+  configuration and network speed) - **NEVER CANCEL**
 - **GNATformat installation**: Takes 10+ minutes - Set timeout to 15+ minutes,
   **NEVER CANCEL**
 - **Regular builds**: < 5 seconds - **NEVER CANCEL**
