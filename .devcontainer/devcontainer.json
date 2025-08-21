@@ -88,16 +88,9 @@
 			]
 		},
 		"codespaces": {
-			"repositories": {
-				"torsknod2/ieee1788-ada": {
-					"permissions": {
-						"contents:write": true,
-						"pull_requests:write": true,
-						"issues:write": true,
-						"repository_projects:write": true
-					}
-				}
-			}
+			"openFiles": [
+				"README.md"
+			]
 		}
 	},
 	// Uncomment to connect as root instead. More info: https://aka.ms/dev-containers-non-root.
