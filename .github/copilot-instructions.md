@@ -40,15 +40,16 @@ export PATH=$PATH:/home/runner/.alire/bin
 <?xml version='1.0' encoding='utf-8' ?>
 <TestRun>
   <Statistics>
-    <Tests>1</Tests>
+    <Tests>[number > 0]</Tests>
     <FailuresTotal>0</FailuresTotal>
     <Failures>0</Failures>
     <Errors>0</Errors>
   </Statistics>
   <SuccessfulTests>
     <Test>
-      <Name>Test IEEE 1788 To_Interval function</Name>
+      <Name>[test name]</Name>
     </Test>
+    <!-- Additional successful tests may appear here -->
   </SuccessfulTests>
 </TestRun>
 ```
