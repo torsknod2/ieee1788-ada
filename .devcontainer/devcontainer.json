@@ -19,10 +19,6 @@
 		"ghcr.io/devcontainers/features/github-cli": {
 			"installDirectlyFromGitHubRelease": true
 		},
-		"ghcr.io/devcontainers/features/python": {
-			"installJupyterlab": true,
-			"installTools": true
-		},
 		"ghcr.io/devcontainers-extra/features/act-asdf": {},
 		"ghcr.io/devcontainers-extra/features/actions-runner": {},
 		"ghcr.io/devcontainers-extra/features/gh-cli": {},
@@ -40,10 +36,10 @@
 	},
 	// Use 'forwardPorts' to make a list of ports inside the container available locally.
 	// "forwardPorts": [],
-	// Install and update all Alire packages used in CI/CD on every container start
-	"postStartCommand": "alr toolchain --select gnat_native gprbuild gnatcov gnatdoc gnatformat gnatprove && alr update",
+	// Ensure home directories and all contents are owned by the respective user (excluding system users)
 	// Pre-install Alire packages during container creation to minimize start time
-	"postCreateCommand": "alr toolchain --select gnat_native gprbuild gnatcov gnatdoc gnatformat gnatprove && alr update",
+	"postCreateCommand": "getent passwd | awk -F: '$3 >= 1000 && $1 != \"nobody\" {print $6}' | while read home; do sudo chown -cR --reference \"$home\" \"$home\"; done && alr toolchain --select gnat_native gprbuild && alr install gnatcov gnatprove && alr update",
+	"postStartCommand": "getent passwd | awk -F: '$3 >= 1000 && $1 != \"nobody\" {print $6}' | while read home; do sudo chown -cR --reference \"$home\" \"$home\"; done && alr toolchain --select gnat_native gprbuild && alr install gnatcov gnatprove && alr update",
 	// Configure tool-specific properties.
 	"customizations": {
 		"vscode": {
