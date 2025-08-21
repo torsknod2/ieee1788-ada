@@ -25,7 +25,7 @@ export PATH=$PATH:/home/runner/.alire/bin
 
 ### Critical Timing and Automation Warnings
 
-- **Toolchain installation**: Takes 15-30 seconds total - **NEVER CANCEL**
+- **Toolchain installation**: Typically takes 15-30 seconds (may vary by system configuration and network speed) - **NEVER CANCEL**
 - **GNATformat installation**: Takes 10+ minutes - Set timeout to 15+ minutes,
   **NEVER CANCEL**
 - **Regular builds**: < 5 seconds - **NEVER CANCEL**
