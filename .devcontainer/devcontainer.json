@@ -30,6 +30,7 @@
 			"repo": "alire-project/alire"
 		},
 		"ghcr.io/devcontainers-extra/features/git-lfs": {},
+		"ghcr.io/devcontainers-extra/features/pre-commit": {},
 		"ghcr.io/dhoeric/features/act": {},
 		"ghcr.io/itsmechlark/features/act": {},
 		"ghcr.io/joshuanianji/devcontainer-features/github-cli-persistence": {}
@@ -38,8 +39,8 @@
 	// "forwardPorts": [],
 	// Ensure home directories and all contents are owned by the respective user (excluding system users)
 	// Pre-install Alire packages during container creation to minimize start time
-	"postCreateCommand": "getent passwd | awk -F: '$3 >= 1000 && $1 != \"nobody\" {print $6}' | while read home; do sudo chown -cR --reference \"$home\" \"$home\"; done && alr toolchain --select gnat_native gprbuild && alr install gnatcov gnatprove && alr update",
-	"postStartCommand": "getent passwd | awk -F: '$3 >= 1000 && $1 != \"nobody\" {print $6}' | while read home; do sudo chown -cR --reference \"$home\" \"$home\"; done && alr toolchain --select gnat_native gprbuild && alr install gnatcov gnatprove && alr update",
+	"postCreateCommand": "getent passwd | awk -F: '$3 >= 1000 && $1 != \"nobody\" {print $6}' | while read home; do sudo chown -cR --reference \"$home\" \"$home\"; done && alr toolchain --select gnat_native gprbuild && alr install gnatcov gnatprove && alr update && pipx upgrade-all",
+	"postStartCommand": "getent passwd | awk -F: '$3 >= 1000 && $1 != \"nobody\" {print $6}' | while read home; do sudo chown -cR --reference \"$home\" \"$home\"; done && alr toolchain --select gnat_native gprbuild && alr install gnatcov gnatprove && alr update && pipx upgrade-all && pre-commit install --install-hooks && pre-commit autoupdate",
 	// Configure tool-specific properties.
 	"customizations": {
 		"vscode": {
@@ -89,6 +90,8 @@
 		},
 		"codespaces": {
 			"openFiles": [
+				"CODE_OF_CONDUCT.md",
+				"CONTRIBUTING.md",
 				"README.md"
 			]
 		}
