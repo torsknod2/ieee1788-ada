@@ -35,6 +35,23 @@ export PATH=$PATH:/home/runner/.alire/bin
 3. **Style validation**: `alr build --validation` (must succeed after fixing style issues)
 4. **Formal verification**: `alr gnatprove --proof=progressive:all --level=4 -j0` (should complete without errors)
 
+### Pre-commit Hook Management
+- **Apply fixes automatically**: Run `pre-commit run --all-files` to apply automatic fixes from hooks
+- **Critical requirement**: All pre-commit hooks must pass before committing changes
+- **Hook types include**: Code formatting, linting, security scanning, file validation
+- **Timeout handling**: Set 10+ minute timeouts for pre-commit operations due to network dependencies
+- **Manual intervention**: If hooks fail after automatic fixes, report specific failures to developer
+
+### GNAT Warning Resolution
+- **Zero tolerance policy**: All GNAT warnings must be resolved before validation passes
+- **Warning sources**: Build warnings, style violations, formal verification issues
+- **Resolution workflow**:
+  1. Run `alr build` to identify all warnings
+  2. Apply automatic fixes where possible (formatting, style)
+  3. Manual fixes required for logic/semantic warnings
+  4. Re-run `alr build --validation` to confirm resolution
+- **Escalation protocol**: Report any warnings that cannot be automatically resolved to developer/engineer with specific error details and suggested manual fixes
+
 ### Expected Test Output Format
 ```xml
 <?xml version='1.0' encoding='utf-8' ?>
