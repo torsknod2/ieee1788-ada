@@ -21,6 +21,16 @@
 		},
 		"ghcr.io/devcontainers-extra/features/act-asdf": {},
 		"ghcr.io/devcontainers-extra/features/actions-runner": {},
+		"ghcr.io/devcontainers-extra/features/apt-get-packages": {
+			"packages": [
+				"libgmp-dev"
+			]
+		},
+		"ghcr.io/devcontainers-extra/features/apt-packages": {
+			"packages": [
+				"libgmp-dev"
+			]
+		},
 		"ghcr.io/devcontainers-extra/features/gh-cli": {},
 		"ghcr.io/devcontainers-extra/features/gh-release": {
 			"assetRegex": "^alr-.*-bin-x86_64-linux\\.zip$",
