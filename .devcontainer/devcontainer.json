@@ -1,115 +1,108 @@
 // For format details, see https://aka.ms/devcontainer.json. For config options, see the
 // README at: https://github.com/devcontainers/templates/tree/main/src/ubuntu
 {
-	"name": "DevContainer for GNAT/ Ada development with Alire",
-	// Or use a Dockerfile or Docker Compose file. More info: https://containers.dev/guide/dockerfile
-	"image": "mcr.microsoft.com/devcontainers/base",
-	// Features to add to the dev container. More info: https://containers.dev/features.
-	"features": {
-		"ghcr.io/devcontainers/features/common-utils": {
-			"configureZshAsDefaultShell": true,
-			"installOhMyZsh": true,
-			"installZsh": true,
-			"nonFreePackages": true,
-			"upgradePackages": true
-		},
-		"ghcr.io/devcontainers/features/git": {
-			"ppa": true
-		},
-		"ghcr.io/devcontainers/features/github-cli": {
-			"installDirectlyFromGitHubRelease": true
-		},
-		"ghcr.io/devcontainers-extra/features/act-asdf": {},
-		"ghcr.io/devcontainers-extra/features/actions-runner": {},
-		"ghcr.io/devcontainers-extra/features/apt-get-packages": {
-			"packages": [
-				"libgmp-dev"
-			]
-		},
-		"ghcr.io/devcontainers-extra/features/apt-packages": {
-			"packages": [
-				"libgmp-dev"
-			]
-		},
-		"ghcr.io/devcontainers-extra/features/gh-cli": {},
-		"ghcr.io/devcontainers-extra/features/gh-release": {
-			"assetRegex": "^alr-.*-bin-x86_64-linux\\.zip$",
-			"binaryNames": [
-				"alr"
-			],
-			"repo": "alire-project/alire"
-		},
-		"ghcr.io/devcontainers-extra/features/git-lfs": {},
-		"ghcr.io/devcontainers-extra/features/pre-commit": {},
-		"ghcr.io/dhoeric/features/act": {},
-		"ghcr.io/itsmechlark/features/act": {},
-		"ghcr.io/joshuanianji/devcontainer-features/github-cli-persistence": {}
-	},
-	// Use 'forwardPorts' to make a list of ports inside the container available locally.
-	// "forwardPorts": [],
-	// Ensure home directories and all contents are owned by the respective user (excluding system users)
-	// Pre-install Alire packages during container creation to minimize start time
-	"postCreateCommand": "getent passwd | awk -F: '$3 >= 1000 && $1 != \"nobody\" {print $6}' | while read home; do sudo chown -cR --reference \"$home\" \"$home\"; done && alr toolchain --select gnat_native gprbuild && alr install gnatcov gnatprove && alr update && pipx upgrade-all",
-	"postStartCommand": "getent passwd | awk -F: '$3 >= 1000 && $1 != \"nobody\" {print $6}' | while read home; do sudo chown -cR --reference \"$home\" \"$home\"; done && alr toolchain --select gnat_native gprbuild && alr install gnatcov gnatprove && alr update && pipx upgrade-all && pre-commit install --install-hooks && pre-commit autoupdate",
-	// Configure tool-specific properties.
-	"customizations": {
-		"vscode": {
-			"extensions": [
-				"AdaCore.ada",
-				"bierner.markdown-preview-github-styles",
-				"codecov.codecov",
-				"docker.docker",
-				"donjayamanne.python-environment-manager",
-				"donjayamanne.python-extension-pack",
-				"eamodio.gitlens",
-				"Entomy.ada-snippets",
-				"GitHub.copilot",
-				"GitHub.copilot-chat",
-				"GitHub.remotehub",
-				"github.vscode-github-actions",
-				"GitHub.vscode-pull-request-github",
-				"hbenl.vscode-test-explorer",
-				"KevinRose.vsc-python-indent",
-				"littlefoxteam.vscode-python-test-adapter",
-				"melodicdevelopment.azure-work-management",
-				"ms-azure-devops.azure-pipelines",
-				"ms-azuretools.vscode-azure-github-copilot",
-				"ms-azuretools.vscode-azure-mcp-server",
-				"ms-azuretools.vscode-azureresourcegroups",
-				"ms-azuretools.vscode-containers",
-				"ms-python.autopep8",
-				"ms-python.debugpy",
-				"ms-python.python",
-				"ms-python.vscode-pylance",
-				"ms-python.vscode-python-envs",
-				"MS-SarifVSCode.sarif-viewer",
-				"ms-vscode.azurecli",
-				"ms-vscode.azure-repos",
-				"ms-vscode.copilot-mermaid-diagram",
-				"ms-vscode.cpptools",
-				"ms-vscode-remote.remote-containers",
-				"ms-vscode.remote-repositories",
-				"ms-vscode.test-adapter-converter",
-				"ms-vscode.vscode-github-issue-notebooks",
-				"ms-vscode.vscode-websearchforcopilot",
-				"njpwerner.autodocstring",
-				"redhat.vscode-yaml",
-				"seatonjiang.gitmoji-vscode",
-				"WallabyJs.console-ninja"
-			]
-		},
-		"codespaces": {
-			"openFiles": [
-				"CODE_OF_CONDUCT.md",
-				"CONTRIBUTING.md",
-				"README.md"
-			]
-		}
-	},
-	// Uncomment to connect as root instead. More info: https://aka.ms/dev-containers-non-root.
-	// "remoteUser": "root"
-	"hostRequirements": {
-		"cpus": 4,
-		"memory": "16gb"
-	}
+  "name": "DevContainer for GNAT/ Ada development with Alire",
+  // Or use a Dockerfile or Docker Compose file. More info: https://containers.dev/guide/dockerfile
+  "image": "mcr.microsoft.com/devcontainers/base",
+  // Features to add to the dev container. More info: https://containers.dev/features.
+  "features": {
+    "ghcr.io/devcontainers/features/common-utils": {
+      "configureZshAsDefaultShell": true,
+      "installOhMyZsh": true,
+      "installZsh": true,
+      "nonFreePackages": true,
+      "upgradePackages": true
+    },
+    "ghcr.io/devcontainers/features/git": {
+      "ppa": true
+    },
+    "ghcr.io/devcontainers/features/github-cli": {
+      "installDirectlyFromGitHubRelease": true
+    },
+    "ghcr.io/devcontainers-extra/features/act-asdf": {},
+    "ghcr.io/devcontainers-extra/features/actions-runner": {},
+    "ghcr.io/devcontainers-extra/features/apt-get-packages": {
+      "packages": ["libgmp-dev", "shellcheck"]
+    },
+    "ghcr.io/devcontainers-extra/features/apt-packages": {
+      "packages": ["libgmp-dev", "shellcheck"]
+    },
+    "ghcr.io/devcontainers-extra/features/gh-cli": {},
+    "ghcr.io/devcontainers-extra/features/gh-release": {
+      "assetRegex": "^alr-.*-bin-x86_64-linux\\.zip$",
+      "binaryNames": ["alr"],
+      "repo": "alire-project/alire"
+    },
+    "ghcr.io/devcontainers-extra/features/git-lfs": {},
+    "ghcr.io/devcontainers-extra/features/pre-commit": {},
+    "ghcr.io/devcontainers-extra/features/shfmt": {},
+    "ghcr.io/dhoeric/features/act": {},
+    "ghcr.io/itsmechlark/features/act": {},
+    "ghcr.io/joshuanianji/devcontainer-features/github-cli-persistence": {}
+  },
+  // Use 'forwardPorts' to make a list of ports inside the container available locally.
+  // "forwardPorts": [],
+  // Ensure home directories and all contents are owned by the respective user (excluding system users)
+  // Pre-install Alire packages during container creation to minimize start time
+  "postCreateCommand": ".devcontainer/scripts/post-command.sh",
+  "postStartCommand": ".devcontainer/scripts/post-command.sh",
+  // Configure tool-specific properties.
+  "customizations": {
+    "vscode": {
+      "extensions": [
+        "AdaCore.ada",
+        "bierner.markdown-preview-github-styles",
+        "codecov.codecov",
+        "docker.docker",
+        "DavidAnson.vscode-markdownlint",
+        "donjayamanne.githistory",
+        "donjayamanne.python-environment-manager",
+        "donjayamanne.python-extension-pack",
+        "eamodio.gitlens",
+        "Entomy.ada-snippets",
+        "GitHub.copilot",
+        "GitHub.copilot-chat",
+        "GitHub.remotehub",
+        "github.vscode-github-actions",
+        "GitHub.vscode-pull-request-github",
+        "hbenl.vscode-test-explorer",
+        "KevinRose.vsc-python-indent",
+        "littlefoxteam.vscode-python-test-adapter",
+        "melodicdevelopment.azure-work-management",
+        "ms-azure-devops.azure-pipelines",
+        "ms-azuretools.vscode-azure-github-copilot",
+        "ms-azuretools.vscode-azure-mcp-server",
+        "ms-azuretools.vscode-azureresourcegroups",
+        "ms-azuretools.vscode-containers",
+        "ms-python.autopep8",
+        "ms-python.debugpy",
+        "ms-python.python",
+        "ms-python.vscode-pylance",
+        "ms-python.vscode-python-envs",
+        "MS-SarifVSCode.sarif-viewer",
+        "ms-vscode.azurecli",
+        "ms-vscode.azure-repos",
+        "ms-vscode.copilot-mermaid-diagram",
+        "ms-vscode.cpptools",
+        "ms-vscode-remote.remote-containers",
+        "ms-vscode.remote-repositories",
+        "ms-vscode.test-adapter-converter",
+        "ms-vscode.vscode-github-issue-notebooks",
+        "ms-vscode.vscode-websearchforcopilot",
+        "njpwerner.autodocstring",
+        "redhat.vscode-yaml",
+        "seatonjiang.gitmoji-vscode",
+        "WallabyJs.console-ninja"
+      ]
+    },
+    "codespaces": {
+      "openFiles": ["CODE_OF_CONDUCT.md", "CONTRIBUTING.md", "README.md"]
+    }
+  },
+  // Uncomment to connect as root instead. More info: https://aka.ms/dev-containers-non-root.
+  // "remoteUser": "root"
+  "hostRequirements": {
+    "cpus": 4,
+    "memory": "16gb"
+  }
 }
