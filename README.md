@@ -23,6 +23,7 @@ Do not use it not baselined/ unreleased or with a baseline/ release below
 
 ## Status Badges
 
+- [![Alire][alire-badge]][alire-url]
 - [![Best Practices][best-practices-badge]][best-practices-url]
 - [![CI/ CD][cicd-badge]][cicd-url]
 - [![Code Coverage][codecov-badge]][codecov-url]
@@ -31,6 +32,8 @@ Do not use it not baselined/ unreleased or with a baseline/ release below
 - [![Average time to resolve an issue](http://isitmaintained.com/badge/resolution/torsknod2/ieee1788-ada.svg)](http://isitmaintained.com/project/torsknod2/ieee1788-ada "Average time to resolve an issue")
 - [![Percentage of issues still open](http://isitmaintained.com/badge/open/torsknod2/ieee1788-ada.svg)](http://isitmaintained.com/project/torsknod2/ieee1788-ada "Percentage of issues still open")
 
+[alire-badge]: https://img.shields.io/endpoint?url=https://alire.ada.dev/badges/ieee1788.json
+[alire-url]: https://alire.ada.dev/crates/ieee1788.html
 [best-practices-badge]: https://bestpractices.coreinfrastructure.org/projects/10022/badge
 [best-practices-url]: https://bestpractices.coreinfrastructure.org/projects/10022
 [cicd-badge]: https://github.com/torsknod2/ieee1788-ada/actions/workflows/cicd.yaml/badge.svg

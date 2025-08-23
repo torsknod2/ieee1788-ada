@@ -14,7 +14,7 @@ pipx install uv
 if [ -r requirements.txt ]; then
 	python3 -m venv --upgrade-deps .venv
 	(cd ~ && alr get libadalang)
-	pip install ~/libadalang_*/python
+	.venv/bin/pip install ~/libadalang_*/python
 	.venv/bin/pip install -U -r requirements.txt
 fi
 if [ -r .pre-commit-config.yaml ]; then
