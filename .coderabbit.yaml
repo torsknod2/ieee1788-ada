@@ -32,17 +32,17 @@
 # which apply to the Application, with which you must still comply.
 
 language: en-US
-tone_instructions: 'Use a mostly professional and formal tone, but feel free to let some sarcastic/ diss humor shine through for entertainment of the developers having a similar humor.'
+tone_instructions: "Use a mostly professional and formal tone, but feel free to let some sarcastic/ diss humor shine through for entertainment of the developers having a similar humor."
 early_access: true
 enable_free_tier: true
 reviews:
   profile: assertive
   request_changes_workflow: true
   high_level_summary: true
-  high_level_summary_placeholder: '@coderabbitai summary'
+  high_level_summary_placeholder: "@coderabbitai summary"
   high_level_summary_in_walkthrough: true
-  auto_title_placeholder: '@coderabbitai'
-  auto_title_instructions: 'Have a very professional and formal tone here, which can safely be shown in professional quality, security and safety audits/ aassessments.'
+  auto_title_placeholder: "@coderabbitai"
+  auto_title_instructions: "Have a very professional and formal tone here, which can safely be shown in professional quality, security and safety audits/ aassessments."
   review_status: true
   commit_status: true
   fail_commit_status: false

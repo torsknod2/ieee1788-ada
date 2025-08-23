@@ -41,7 +41,7 @@
 --  @see https://standards.ieee.org/ieee/1788.1/6074/
 --
 
-package body Ieee1788 is
+package body Ieee1788.Implementation is
 
    --  Returns an interval containing all representable values of type T
    --  Creates an interval spanning the entire range of type T
@@ -494,4 +494,4 @@ package body Ieee1788 is
       return (if Left > Right then Left else Right);
    end Max;
 
-end Ieee1788;
+end Ieee1788.Implementation;

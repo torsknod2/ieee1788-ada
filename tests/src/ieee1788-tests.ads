@@ -34,17 +34,6 @@
 --  any license terms which apply to the Application, with which you must
 --  still comply.
 
---  @summary
---  A native Ada implementation of IEEE 1788 interval arithmetic.
---
---  @description
---  This library implements the IEEE 1788.1 specification for interval
---  arithmetic. It provides basic arithmetic operations and comparisons
---  for intervals.
---
---  @see https://standards.ieee.org/ieee/1788/4431/
---  @see https://standards.ieee.org/ieee/1788.1/6074/
-
-package Ieee1788 is
+package Ieee1788.Tests is
    pragma Pure;
-end Ieee1788;
+end Ieee1788.Tests;

@@ -34,18 +34,48 @@
 --  any license terms which apply to the Application, with which you must
 --  still comply.
 
-with Generic_Suite;
+with Ada.Command_Line;
+with Ada.Text_IO;
+with AUnit.Run;
+with AUnit.Reporter.XML;
+with Ieee1788.Tests.Suites;
 
-package body Suites is
-   type Integer_Unsigned_Zero is delta 1.0 range 0.0 .. 0.0;
-   package Integer_Unsigned_Zero_Suite is new
-     Generic_Suite (G => Integer_Unsigned_Zero);
-
-   function Master_Suite return AUnit.Test_Suites.Access_Test_Suite is
-      Result : constant AUnit.Test_Suites.Access_Test_Suite :=
-        AUnit.Test_Suites.New_Suite;
+procedure Ieee1788.Tests.Main is
+   procedure Run is new AUnit.Run.Test_Runner
+     (Ieee1788.Tests.Suites.Master_Suite);
+   Reporter_File : aliased Ada.Text_IO.File_Type;
+   Reporter      : AUnit.Reporter.XML.XML_Reporter;
+   procedure Finally;
+   procedure Finally is
    begin
-      Result.Add_Test (Integer_Unsigned_Zero_Suite.Suite);
-      return Result;
-   end Master_Suite;
-end Suites;
+      begin
+         Ada.Text_IO.Close (Reporter_File);
+      exception
+         when others =>
+            null;
+      end;
+      begin
+         Ada.Text_IO.Delete (Reporter_File);
+      exception
+         when others =>
+            null;
+      end;
+      pragma Annotate (Xcov, Dump_Buffers);
+   end Finally;
+begin
+   if Ada.Command_Line.Argument_Count >= 1 then
+      Ada.Text_IO.Create
+        (Reporter_File, Ada.Text_IO.Out_File, Ada.Command_Line.Argument (1));
+      Reporter.Set_File (Reporter_File'Unchecked_Access);
+   else
+      null;
+   end if;
+   begin
+      Run (Reporter);
+   exception
+      when others =>
+         Finally;
+         raise;
+   end;
+   Finally;
+end Ieee1788.Tests.Main;

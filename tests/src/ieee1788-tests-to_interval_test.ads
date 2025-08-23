@@ -35,8 +35,18 @@
 --  still comply.
 
 with AUnit.Test_Suites;
+with AUnit.Test_Fixtures;
 
-package Suites is
+generic
+   type G is delta <>;
+package Ieee1788.Tests.To_Interval_Test is
+   type Test_Suite is new AUnit.Test_Fixtures.Test_Fixture with null record;
 
-   function Master_Suite return AUnit.Test_Suites.Access_Test_Suite;
-end Suites;
+   function Suite return AUnit.Test_Suites.Access_Test_Suite;
+
+private
+   procedure Test_First (T : in out Test_Suite);
+   procedure Test_Last (T : in out Test_Suite);
+   procedure Test_Zero (T : in out Test_Suite);
+   procedure Test_Range (T : in out Test_Suite);
+end Ieee1788.Tests.To_Interval_Test;

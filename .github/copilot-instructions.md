@@ -51,7 +51,7 @@ export PATH=$PATH:/home/runner/.alire/bin
 3. **Style validation**: `alr build --validation` (must succeed after fixing
    style issues)
 4. **Formal verification**: `alr gnatprove --proof=progressive:all --level=4
-   -j0` (should complete without errors)
+-j0` (should complete without errors)
 
 ### Pre-commit Hook Management
 

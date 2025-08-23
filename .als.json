@@ -1,0 +1,9 @@
+{
+  "projectFile": "ieee1788.gpr",
+  "defaultCharset": "US-ASCII",
+  "renameInComments": true,
+  "useCompletionSnippets": true,
+  "insertWithClauses": true,
+  "displayMethodAncestryOnNavigation": "always",
+  "namedNotationThreshold": 0
+}

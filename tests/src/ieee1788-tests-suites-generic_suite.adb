@@ -34,10 +34,17 @@
 --  any license terms which apply to the Application, with which you must
 --  still comply.
 
-with AUnit.Test_Suites;
+with Ieee1788.Tests.To_Interval_Test;
 
-generic
-   type G is delta <>;
-package Generic_Suite is
-   function Suite return AUnit.Test_Suites.Access_Test_Suite;
-end Generic_Suite;
+package body Ieee1788.Tests.Suites.Generic_Suite is
+   package To_Interval_Test_Instance is new Ieee1788.Tests.To_Interval_Test
+     (G => G);
+
+   function Suite return AUnit.Test_Suites.Access_Test_Suite is
+      Result : constant AUnit.Test_Suites.Access_Test_Suite :=
+        new AUnit.Test_Suites.Test_Suite;
+   begin
+      Result.Add_Test (To_Interval_Test_Instance.Suite);
+      return Result;
+   end Suite;
+end Ieee1788.Tests.Suites.Generic_Suite;

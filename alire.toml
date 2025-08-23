@@ -36,8 +36,9 @@ description = "IEEE 1788.1 library"
 long-description = "This library implements the IEEE 1788.1 specification for interval arithmetic."
 version = "0.0.1-dev+31"
 licenses = "LGPL-3.0-or-later WITH LGPL-3.0-linking-exception"
-tags = ["ada", "math", "library"]
+tags = ["ada", "arithmetic", "ieee1788", "interval", "interval-arithmetic", "library", "math"]
 
 authors = ["Torsten Knodt"]
-maintainers = ["Torsten Knodt <torsten.knodt@datas-world.de>"]
+maintainers = ["Torsten Knodt <torsten.knodt+com.github.ieee1788-ada@datas-world.de>"]
 maintainers-logins = ["torsknod2"]
+website = "https://github.com/torsknod2/ieee1788-ada/pull/51"

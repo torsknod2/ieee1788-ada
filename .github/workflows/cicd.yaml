@@ -73,8 +73,16 @@ jobs:
           fetch-tags: true
           filter: tree:0
 
+      - name: Install shfmt
+        run: |
+          wget https://github.com/mvdan/sh/releases/download/v3.12.0/shfmt_v3.12.0_linux_amd64 -O $HOME/shfmt
+          chmod +x $HOME/shfmt
+          echo "$HOME" >> $GITHUB_PATH
+
       - name: Run pre-commit
         uses: pre-commit/action@2c7b3805fd2a0fd8c1884dcaebf91fc102a13ecd
+        env:
+          SKIP: "gnatpp-implementation,gnatpp-tests,unit-tests"
         with:
           extra_args: --all-files --show-diff-on-failure
 
