@@ -11,7 +11,7 @@ and security-sensitive applications.
 
 The project is currently in an exploratory phase where I am learning `Ada`
 through practical implementation.
-While the code *is* not yet be production-ready,
+While the code _is_ not yet be production-ready,
 the ultimate goal is to develop a library suitable for:
 
 - High-reliability environments

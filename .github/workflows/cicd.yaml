@@ -78,7 +78,6 @@ jobs:
         env:
           SKIP: "gnatpp-implementation,gnatpp-tests,unit-tests"
         with:
-
           extra_args: --all-files --show-diff-on-failure
 
   GNATprove:
