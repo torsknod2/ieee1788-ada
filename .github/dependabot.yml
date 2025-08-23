@@ -38,10 +38,15 @@
 
 version: 2
 updates:
-  - package-ecosystem: "github-actions"
+  - package-ecosystem: "devcontainers"
     assignees:
       - "torsknod2"
-    reviewers:
+    directory: "/" # Location of devcontainer.json or .devcontainer folder
+    schedule:
+      interval: "daily"
+
+  - package-ecosystem: "github-actions"
+    assignees:
       - "torsknod2"
     directory: "/" # Location of package manifests
     schedule:
@@ -49,8 +54,6 @@ updates:
 
   - package-ecosystem: pip
     assignees:
-      - "torsknod2"
-    reviewers:
       - "torsknod2"
     directory: /
     schedule:
